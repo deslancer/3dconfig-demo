@@ -12,7 +12,7 @@ export const Select = (props: SelectProps) => {
             </label>
             <select onChange={(e) => props.onChange(e.target.value)} value={props.value} className="w-full bg-white text-dark-gray px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12">
                 {props.options.map((option) => (
-                    <option value={option}>{option}</option>
+                    <option key={option} value={option}>{option}</option>
                 ))}
             </select>
         </div>

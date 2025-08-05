@@ -1,12 +1,19 @@
-import { useState } from "react";
 import { Input } from "./Input";
 import { Select } from "./Select";
 
-export const Sidebar = () => {
-    const [width, setWidth] = useState(2000);
-    const [height, setHeight] = useState(2500);
-    const [depth, setDepth] = useState(630);
-    const [material, setMaterial] = useState<string>("donker-hout");
+interface SidebarProps {
+  width: number;
+  height: number;
+  depth: number;
+  material: string;
+  onWidthChange: (value: number) => void;
+  onHeightChange: (value: number) => void;
+  onDepthChange: (value: number) => void;
+  onMaterialChange: (value: string) => void;
+}
+
+export const Sidebar = (props: SidebarProps) => {
+    const { width, height, depth, material, onWidthChange, onHeightChange, onDepthChange, onMaterialChange } = props;
     const materialsList = ["donker-hout", "licht-hout", "hout-effect"];
   return (
     <div className="h-full flex flex-col">
@@ -16,19 +23,19 @@ export const Sidebar = () => {
         
         <div className="border-b border-gray-200 pb-4">
         
-          <Input labelText="Breedte" type="number" min={250} max={10000} value={width} className="w-full" onChange={setWidth} />
+          <Input labelText="Breedte" type="number" min={250} max={10000} value={width} className="w-full" onChange={onWidthChange} />
         </div>
 
         <div className="border-b border-gray-200 pb-4">
-          <Input labelText="Hoogte" type="number" min={400} max={2850} value={height} className="w-full" onChange={setHeight} />
+          <Input labelText="Hoogte" type="number" min={400} max={2850} value={height} className="w-full" onChange={onHeightChange} />
         </div>
 
         <div className="border-b border-gray-200 pb-4">
-          <Input labelText="Diepte" type="number" min={250} max={800} value={depth} className="w-full" onChange={setDepth} />
+          <Input labelText="Diepte" type="number" min={250} max={800} value={depth} className="w-full" onChange={onDepthChange} />
         </div>
 
         <div className="border-b border-gray-200 pb-4">
-          <Select labelText="Material" options={materialsList} value={material} onChange={setMaterial} />
+          <Select labelText="Material" options={materialsList} value={material} onChange={onMaterialChange} />
         </div>
         
         <div>
