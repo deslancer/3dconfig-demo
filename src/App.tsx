@@ -4,26 +4,13 @@ import { Scene } from "./components/3D/Scene";
 import { Sidebar } from "./components/UI/Sidebar";
 import { MaterialType } from "./components/helpers/Materials";
 
-const App = () => {
 
+const App = () => {
   const [width, setWidth] = useState(2000);
   const [height, setHeight] = useState(2500);
   const [depth, setDepth] = useState(630);
   const [materialType, setMaterialType] = useState<MaterialType>(MaterialType.DARK_WOOD);
 
-  
-  const getMaterialColor = (materialType: string): string => {
-    switch (materialType) {
-      case "donker-hout":
-        return "#8b6d56";
-      case "licht-hout":
-        return "#c4a576";
-      case "hout-effect":
-        return "#9d7c5a";
-      default:
-        return "#8b6d56";
-    }
-  };
 
   return (
     <div className="h-screen w-screen bg-dark-gray relative">
@@ -50,7 +37,7 @@ const App = () => {
             onWidthChange={setWidth}
             onHeightChange={setHeight}
             onDepthChange={setDepth}
-            onMaterialChange={setMaterialType}  
+            onMaterialChange={setMaterialType}
           />
         </div>
       </main>

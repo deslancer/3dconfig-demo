@@ -2,20 +2,23 @@ import { Input } from "./Input";
 import { Select } from "./Select";
 import { MaterialType } from "../helpers/Materials";
 
+
 interface SidebarProps {
   width: number;
   height: number;
   depth: number;
-  material: string;
+  materialType: MaterialType;
   onWidthChange: (value: number) => void;
   onHeightChange: (value: number) => void;
   onDepthChange: (value: number) => void;
   onMaterialChange: (value: MaterialType) => void;
+ 
 }
 
 export const Sidebar = (props: SidebarProps) => {
-    const { width, height, depth, material, onWidthChange, onHeightChange, onDepthChange, onMaterialChange } = props;
+    const { width, height, depth, materialType, onWidthChange, onHeightChange, onDepthChange, onMaterialChange, onUvTransformChange } = props;
     const materialsList = Object.values(MaterialType);
+   
   return (
     <div className="h-full flex flex-col">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Instellingen</h2>
@@ -36,9 +39,9 @@ export const Sidebar = (props: SidebarProps) => {
         </div>
 
         <div className="border-b border-gray-200 pb-4">
-          <Select labelText="Material" options={materialsList} value={material} onChange={onMaterialChange} />
+          <Select labelText="Material" options={materialsList} value={materialType} onChange={onMaterialChange} />
         </div>
-        
+
         <div>
           <h3 className="text-md font-medium text-gray-700 mb-2">Informatie</h3>
           <div className="text-sm text-gray-500 space-y-1">

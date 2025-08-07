@@ -4,6 +4,7 @@ import { Floor } from "./Floor"
 import { Kast } from "./Kast/Kast"
 import { MaterialType } from "../helpers/Materials";
 
+
 interface SceneProps {
   width: number;
   height: number;
@@ -51,6 +52,7 @@ export const Scene = (props: SceneProps) => {
           height={height} 
           depth={depth} 
           materialType={materialType}
+        
         />
       </Canvas>
     )

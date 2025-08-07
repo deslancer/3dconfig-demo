@@ -1,4 +1,6 @@
 
+import { UVTransform, applyUVTransform } from './helpers'
+
 export enum MaterialType {
   CHROME = 'chrome',
   BLACK_METAL = 'blackMetal',
@@ -6,6 +8,7 @@ export enum MaterialType {
   LIGHT_WOOD = 'lightWood',
   GLASS = 'glass'
 }
+
 
 export const materialConfigs = {
   [MaterialType.CHROME]: {
@@ -21,16 +24,15 @@ export const materialConfigs = {
     envMapIntensity: 1.0,
   },
   [MaterialType.DARK_WOOD]: {
-    color: '#3d2914',
-    metalness: 0.0,
-    roughness: 0.8,
+    metalness: 0.1,
+    roughness: 0.5,
     envMapIntensity: 0.5,
   },
   [MaterialType.LIGHT_WOOD]: {
     color: '#d2b48c',
-    metalness: 0.0,
-    roughness: 0.7,
-    envMapIntensity: 0.4,
+    metalness: 0.1,
+    roughness: 0.5,
+    envMapIntensity: 0.5,
   },
   [MaterialType.GLASS]: {
     color: '#ffffff',
@@ -61,27 +63,38 @@ export const materialPreviews = {
   [MaterialType.GLASS]: '#ffffff'
 }
 
+
 export const getMaterialConfig = (materialType: MaterialType) => {
   return materialConfigs[materialType]
 }
 
-export const StandardMaterial = ({ materialType }: { materialType: MaterialType }) => {
-  const config = materialConfigs[materialType]
-  
-  return <meshStandardMaterial {...config} />
+interface MaterialProps {
+  materialType: MaterialType
+  map?: any
+  uvTransform?: UVTransform
 }
 
-export const PhysicalMaterial = ({ materialType }: { materialType: MaterialType }) => {
+export const StandardMaterial = ({ materialType, map, uvTransform }: MaterialProps) => {
   const config = materialConfigs[materialType]
   
-  return <meshPhysicalMaterial {...config} />
+  // Применяем UV трансформации если они указаны
+  const transformedMap = uvTransform && map ? applyUVTransform(map.clone(), uvTransform) : map
+  
+  return <meshStandardMaterial {...config} map={transformedMap} /> 
 }
 
+export const PhysicalMaterial = ({ materialType, map, uvTransform }: MaterialProps) => {
+  const config = materialConfigs[materialType]
+  
+  // Применяем UV трансформации если они указаны
+  const transformedMap = uvTransform && map ? applyUVTransform(map.clone(), uvTransform) : map
+  
+  return <meshPhysicalMaterial {...config} map={transformedMap} />
+}
 
-export const Material = ({ materialType }: { materialType: MaterialType }) => {
- 
+export const Material = ({ materialType, map, uvTransform }: MaterialProps) => {
   if (materialType === MaterialType.GLASS) {
-    return <PhysicalMaterial materialType={materialType} />
+    return <PhysicalMaterial materialType={materialType} map={map} uvTransform={uvTransform} />
   }
-  return <StandardMaterial materialType={materialType} />
+  return <StandardMaterial materialType={materialType} map={map} uvTransform={uvTransform} />
 }

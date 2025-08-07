@@ -13,19 +13,19 @@ export const Kastpoten = (props: KastpotenProps) => {
 
     return (
         <group position={[0, height / 2, 0]}>
-            <mesh position={[-props.width / 2 + diameter / 2 + padding, 0, -props.depth / 2 + diameter / 2 + padding]}>
+            <mesh position={[-props.width / 2 + diameter / 2 + padding, 0, -props.depth / 2 + diameter / 2 + padding]} castShadow>
                 <cylinderGeometry args={[diameter, diameter, height]} />
                 <Material materialType={MaterialType.CHROME} />
             </mesh>
-            <mesh position={[-props.width / 2 + diameter / 2 + padding, 0, props.depth / 2 - diameter / 2 - padding]}>
+            <mesh position={[-props.width / 2 + diameter / 2 + padding, 0, props.depth / 2 - diameter / 2 - padding]} castShadow>
                 <cylinderGeometry args={[diameter, diameter, height]} />
                 <Material materialType={MaterialType.CHROME} />
             </mesh>
-            <mesh position={[props.width / 2 - diameter / 2 - padding, 0, -props.depth / 2 + diameter / 2 + padding]}>
+            <mesh position={[props.width / 2 - diameter / 2 - padding, 0, -props.depth / 2 + diameter / 2 + padding]} castShadow>
                 <cylinderGeometry args={[diameter, diameter, height]} />
                 <Material materialType={MaterialType.CHROME} />
             </mesh>
-            <mesh position={[props.width / 2 - diameter / 2 - padding, 0, props.depth / 2 - diameter / 2 - padding]}>
+            <mesh position={[props.width / 2 - diameter / 2 - padding, 0, props.depth / 2 - diameter / 2 - padding]} castShadow>
                 <cylinderGeometry args={[diameter, diameter, height]} />
                 <Material materialType={MaterialType.CHROME} />
             </mesh>
