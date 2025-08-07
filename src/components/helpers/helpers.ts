@@ -14,6 +14,47 @@ export const getPartitionPositions = (width: number, wallThickness: number) => {
     return partitionPositions
 }
 
+// Функция для вычисления позиций дверей
+export const getDoorPositions = (width: number, wallThickness: number) => {
+    const sectionWidth = 1.0
+    const availableWidth = width - 2 * wallThickness
+    const numberOfSections = Math.floor(availableWidth / sectionWidth) + 1
+    const actualSectionWidth = availableWidth / numberOfSections
+    
+    const doorPositions = []
+    const doorSpacing = 0.005 // Расстояние между дверьми в паре
+    const groupSpacing = 0.01 // Расстояние между группами дверей
+    
+    for (let i = 0; i < numberOfSections; i++) {
+        const sectionCenterX = -width / 2 + wallThickness + (i + 0.5) * actualSectionWidth
+        
+        // Ширина каждой двери (учитываем промежутки)
+        const availableDoorWidth = actualSectionWidth - groupSpacing
+        const singleDoorWidth = (availableDoorWidth - doorSpacing) / 2
+        
+        // Позиции левой и правой двери в секции
+        const leftDoorX = sectionCenterX - doorSpacing / 2 - singleDoorWidth / 2
+        const rightDoorX = sectionCenterX + doorSpacing / 2 + singleDoorWidth / 2
+        
+        doorPositions.push({
+            leftDoor: {
+                x: leftDoorX,
+                width: singleDoorWidth,
+                hingePosition: leftDoorX - singleDoorWidth / 2, // Петля слева
+                isLeft: true
+            },
+            rightDoor: {
+                x: rightDoorX,
+                width: singleDoorWidth,
+                hingePosition: rightDoorX + singleDoorWidth / 2, // Петля справа
+                isLeft: false
+            }
+        })
+    }
+    
+    return doorPositions
+}
+
 // Интерфейс для UV трансформаций
 export interface UVTransform {
     offsetX?: number

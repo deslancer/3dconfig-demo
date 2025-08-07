@@ -10,10 +10,12 @@ interface SceneProps {
   height: number;
   depth: number;
   materialType: MaterialType;
+  allDoorsOpen?: boolean;
+  onDoorStateChange?: (allOpen: boolean) => void;
 }
 
 export const Scene = (props: SceneProps) => {
-    const { width, height, depth, materialType } = props;
+    const { width, height, depth, materialType, allDoorsOpen, onDoorStateChange } = props;
     
     const cameraDistance = Math.max(width, height, depth) * 2.5;
     const cameraPosition: [number, number, number] = [
@@ -52,7 +54,8 @@ export const Scene = (props: SceneProps) => {
           height={height} 
           depth={depth} 
           materialType={materialType}
-        
+          allDoorsOpen={allDoorsOpen}
+          onDoorStateChange={onDoorStateChange}
         />
       </Canvas>
     )

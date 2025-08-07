@@ -1,7 +1,6 @@
 import { useLoader } from "@react-three/fiber"
 import { MaterialType } from "../../helpers/Materials"
 import { Baseren } from "./Baseren"
-// import { Deuren } from "./Deuren"
 import { Kastpoten } from "./Kastpoten"
 import { TextureLoader } from "three"
 import { Deuren } from "./Deuren"
@@ -12,10 +11,12 @@ interface KastProps {
     depth: number
     materialType: MaterialType
     wallThickness?: number
+    allDoorsOpen?: boolean
+    onDoorStateChange?: (allOpen: boolean) => void
 }
 
 export const Kast = (props: KastProps) => {
-    const { width, height, depth, materialType, wallThickness = 0.02 } = props
+    const { width, height, depth, materialType, wallThickness = 0.02, allDoorsOpen, onDoorStateChange } = props
     const colorMapDarkWood = useLoader(TextureLoader, '/assets/dark_wood.jpg')  
     return (
         <group>
@@ -27,8 +28,17 @@ export const Kast = (props: KastProps) => {
                 wallThickness={wallThickness}
                 texture={colorMapDarkWood}
             />
-{            <Deuren width={width} height={height} depth={depth} wallThickness={wallThickness} materialType={materialType} />
-}            <Kastpoten width={width} height={height} depth={depth} />
+            <Deuren 
+                width={width} 
+                height={height} 
+                depth={depth} 
+                wallThickness={wallThickness} 
+                materialType={materialType}
+                texture={colorMapDarkWood}
+                allDoorsOpen={allDoorsOpen}
+                onDoorStateChange={onDoorStateChange}
+            />
+            <Kastpoten width={width} height={height} depth={depth} />
         </group>
     )
 }
