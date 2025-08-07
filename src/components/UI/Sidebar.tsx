@@ -1,5 +1,6 @@
 import { Input } from "./Input";
 import { Select } from "./Select";
+import { MaterialType } from "../helpers/Materials";
 
 interface SidebarProps {
   width: number;
@@ -9,12 +10,12 @@ interface SidebarProps {
   onWidthChange: (value: number) => void;
   onHeightChange: (value: number) => void;
   onDepthChange: (value: number) => void;
-  onMaterialChange: (value: string) => void;
+  onMaterialChange: (value: MaterialType) => void;
 }
 
 export const Sidebar = (props: SidebarProps) => {
     const { width, height, depth, material, onWidthChange, onHeightChange, onDepthChange, onMaterialChange } = props;
-    const materialsList = ["donker-hout", "licht-hout", "hout-effect"];
+    const materialsList = Object.values(MaterialType);
   return (
     <div className="h-full flex flex-col">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Instellingen</h2>

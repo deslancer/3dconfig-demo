@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Header } from "./components/UI/Header";
 import { Scene } from "./components/3D/Scene";
 import { Sidebar } from "./components/UI/Sidebar";
+import { MaterialType } from "./components/helpers/Materials";
 
 const App = () => {
 
   const [width, setWidth] = useState(2000);
   const [height, setHeight] = useState(2500);
   const [depth, setDepth] = useState(630);
-  const [material, setMaterial] = useState<string>("donker-hout");
+  const [materialType, setMaterialType] = useState<MaterialType>(MaterialType.DARK_WOOD);
 
   
   const getMaterialColor = (materialType: string): string => {
@@ -36,7 +37,7 @@ const App = () => {
             width={width / 1000}  
             height={height / 1000}
             depth={depth / 1000}
-            material={getMaterialColor(material)}
+            materialType={materialType}
           />
         </div>
         
@@ -45,11 +46,11 @@ const App = () => {
             width={width}
             height={height}
             depth={depth}
-            material={material}
+            materialType={materialType}
             onWidthChange={setWidth}
             onHeightChange={setHeight}
             onDepthChange={setDepth}
-            onMaterialChange={setMaterial}
+            onMaterialChange={setMaterialType}  
           />
         </div>
       </main>

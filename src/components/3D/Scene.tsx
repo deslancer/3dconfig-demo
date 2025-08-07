@@ -2,16 +2,17 @@ import { Canvas } from "@react-three/fiber"
 import { Environment, OrbitControls } from "@react-three/drei"
 import { Floor } from "./Floor"
 import { Kast } from "./Kast/Kast"
+import { MaterialType } from "../helpers/Materials";
 
 interface SceneProps {
   width: number;
   height: number;
   depth: number;
-  material: string;
+  materialType: MaterialType;
 }
 
 export const Scene = (props: SceneProps) => {
-    const { width, height, depth, material } = props;
+    const { width, height, depth, materialType } = props;
     
     const cameraDistance = Math.max(width, height, depth) * 2.5;
     const cameraPosition: [number, number, number] = [
@@ -49,7 +50,7 @@ export const Scene = (props: SceneProps) => {
           width={width} 
           height={height} 
           depth={depth} 
-          material={material}
+          materialType={materialType}
         />
       </Canvas>
     )
