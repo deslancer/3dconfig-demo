@@ -14,48 +14,60 @@ export const getPartitionPositions = (width: number, wallThickness: number) => {
     return partitionPositions
 }
 
-// Функция для вычисления позиций дверей
 export const getDoorPositions = (width: number, wallThickness: number) => {
-    const sectionWidth = 1.0
     const availableWidth = width - 2 * wallThickness
-    const numberOfSections = Math.floor(availableWidth / sectionWidth) + 1
-    const actualSectionWidth = availableWidth / numberOfSections
-    
     const doorPositions = []
-    const doorSpacing = 0.005 // Расстояние между дверьми в паре
-    const groupSpacing = 0.01 // Расстояние между группами дверей
     
-    for (let i = 0; i < numberOfSections; i++) {
-        const sectionCenterX = -width / 2 + wallThickness + (i + 0.5) * actualSectionWidth
-        
-        // Ширина каждой двери (учитываем промежутки)
-        const availableDoorWidth = actualSectionWidth - groupSpacing
-        const singleDoorWidth = (availableDoorWidth - doorSpacing) / 2
-        
-        // Позиции левой и правой двери в секции
-        const leftDoorX = sectionCenterX - doorSpacing / 2 - singleDoorWidth / 2
-        const rightDoorX = sectionCenterX + doorSpacing / 2 + singleDoorWidth / 2
+    if (width >= 0.25 && width <= 0.75) {
+        const doorWidth = availableWidth - 0.01 
+        const doorX = 0 
         
         doorPositions.push({
             leftDoor: {
-                x: leftDoorX,
-                width: singleDoorWidth,
-                hingePosition: leftDoorX - singleDoorWidth / 2, // Петля слева
+                x: doorX,
+                width: doorWidth,
+                hingePosition: doorX - doorWidth / 2, 
                 isLeft: true
             },
-            rightDoor: {
-                x: rightDoorX,
-                width: singleDoorWidth,
-                hingePosition: rightDoorX + singleDoorWidth / 2, // Петля справа
-                isLeft: false
-            }
+            rightDoor: null 
         })
+    } else {
+        const sectionWidth = 1.0
+        const numberOfSections = Math.floor(availableWidth / sectionWidth) + 1
+        const actualSectionWidth = availableWidth / numberOfSections
+        
+        const doorSpacing = 0.005 
+        const groupSpacing = 0.01 
+        
+        for (let i = 0; i < numberOfSections; i++) {
+            const sectionCenterX = -width / 2 + wallThickness + (i + 0.5) * actualSectionWidth
+            
+            const availableDoorWidth = actualSectionWidth - groupSpacing
+            const singleDoorWidth = (availableDoorWidth - doorSpacing) / 2
+            
+            const leftDoorX = sectionCenterX - doorSpacing / 2 - singleDoorWidth / 2
+            const rightDoorX = sectionCenterX + doorSpacing / 2 + singleDoorWidth / 2
+            
+            doorPositions.push({
+                leftDoor: {
+                    x: leftDoorX,
+                    width: singleDoorWidth,
+                    hingePosition: leftDoorX - singleDoorWidth / 2, 
+                    isLeft: true
+                },
+                rightDoor: {
+                    x: rightDoorX,
+                    width: singleDoorWidth,
+                    hingePosition: rightDoorX + singleDoorWidth / 2, 
+                    isLeft: false
+                }
+            })
+        }
     }
     
     return doorPositions
 }
 
-// Интерфейс для UV трансформаций
 export interface UVTransform {
     offsetX?: number
     offsetY?: number
@@ -66,7 +78,6 @@ export interface UVTransform {
     flipY?: boolean
 }
 
-// Функция для применения UV трансформаций к текстуре
 export const applyUVTransform = (texture: any, transform: UVTransform) => {
     if (!texture) return texture
 
@@ -80,28 +91,22 @@ export const applyUVTransform = (texture: any, transform: UVTransform) => {
         flipY = false
     } = transform
 
-    // Применяем смещение
     texture.offset.set(offsetX, offsetY)
     
-    // Применяем повтор (с учетом переворота)
     texture.repeat.set(
         flipX ? -Math.abs(repeatX) : Math.abs(repeatX),
         flipY ? -Math.abs(repeatY) : Math.abs(repeatY)
     )
     
-    // Применяем поворот
     texture.rotation = rotation
     
-    // Устанавливаем центр поворота в центр текстуры
     texture.center.set(0.5, 0.5)
     
-    // Обновляем текстуру
     texture.needsUpdate = true
     
     return texture
 }
 
-// Предустановки для популярных UV трансформаций
 export const UV_PRESETS = {
     NORMAL: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: 0 },
     FLIP_HORIZONTAL: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: 0, flipX: true },

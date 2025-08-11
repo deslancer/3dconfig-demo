@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { useSpring, animated, easings } from "@react-spring/three"
 import { MaterialType, Material } from "../../helpers/Materials"
 import { getDoorPositions } from "../../helpers/helpers"
+import { useLoader } from '@react-three/fiber'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
 interface DeurenProps {
     width: number;
@@ -26,12 +28,14 @@ interface DoorProps {
     texture?: any;
     isOpen: boolean;
     onToggle: () => void;
+    isEdgeDoor?: boolean; 
 }
 
-const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, onToggle }: DoorProps) => {
-    const openAngle = Math.PI / 2 
+const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, onToggle, isEdgeDoor = true }: DoorProps) => {
+    const openAngle = isEdgeDoor ? Math.PI / 2 : (80 * Math.PI / 180)
     const targetAngle = isOpen ? (isLeft ? -openAngle : openAngle) : 0
-    
+    const handleMesh = useLoader(GLTFLoader, 'assets/Handle.glb')
+
     const { rotationY } = useSpring({
         rotationY: targetAngle,
         config: {
@@ -44,6 +48,11 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
     })
     
     const hingeOffset = hingePosition - x
+    
+    const handleXOffset = isLeft ? -hingeOffset + 0.2 : -hingeOffset - 0.2
+    const handleY = 0 
+    const handleZ = wallThickness / 2 + 0.01 
+  
     
     return (
         <animated.group 
@@ -66,6 +75,13 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
                     <meshStandardMaterial color="#f8f9fa" />
                 )}
             </mesh>
+            <primitive 
+                object={handleMesh.scene.clone()} 
+                position={[handleXOffset, handleY, handleZ]} 
+                rotation={[0, -Math.PI / 2, 0]}
+                scale={[1, 1, 1]}
+            />
+            
         </animated.group>
     )
 }
@@ -80,9 +96,11 @@ export const Deuren = (props: DeurenProps) => {
     React.useEffect(() => {
         if (allDoorsOpen !== undefined) {
             const newState: {[key: string]: boolean} = {}
-            doorPositions.forEach((_, sectionIndex) => {
+            doorPositions.forEach((section, sectionIndex) => {
                 newState[`${sectionIndex}-left`] = allDoorsOpen
-                newState[`${sectionIndex}-right`] = allDoorsOpen
+                if (section.rightDoor) {
+                    newState[`${sectionIndex}-right`] = allDoorsOpen
+                }
             })
             setOpenDoors(newState)
         }
@@ -96,7 +114,14 @@ export const Deuren = (props: DeurenProps) => {
                 [key]: !prev[key]
             }
             
-            const allKeys = doorPositions.flatMap((_, idx) => [`${idx}-left`, `${idx}-right`])
+            const allKeys = doorPositions.flatMap((section, idx) => {
+                const keys = [`${idx}-left`]
+                if (section.rightDoor) {
+                    keys.push(`${idx}-right`)
+                }
+                return keys
+            })
+            
             const allOpen = allKeys.every(k => newState[k])
             const allClosed = allKeys.every(k => !newState[k])
             
@@ -111,37 +136,51 @@ export const Deuren = (props: DeurenProps) => {
     
     return (
         <group position={[0, deurenPosition, 0]}>
-            {doorPositions.map((section, sectionIndex) => (
-                <group key={`door-section-${sectionIndex}`}>
-                    <Door
-                        x={section.leftDoor.x}
-                        width={section.leftDoor.width}
-                        height={height}
-                        depth={depth}
-                        wallThickness={wallThickness}
-                        hingePosition={section.leftDoor.hingePosition}
-                        isLeft={section.leftDoor.isLeft}
-                        materialType={materialType}
-                        texture={texture}
-                        isOpen={openDoors[`${sectionIndex}-left`] || false}
-                        onToggle={() => toggleDoor(sectionIndex, true)}
-                    />
-                    
-                    <Door
-                        x={section.rightDoor.x}
-                        width={section.rightDoor.width}
-                        height={height}
-                        depth={depth}
-                        wallThickness={wallThickness}
-                        hingePosition={section.rightDoor.hingePosition}
-                        isLeft={section.rightDoor.isLeft}
-                        materialType={materialType}
-                        texture={texture}
-                        isOpen={openDoors[`${sectionIndex}-right`] || false}
-                        onToggle={() => toggleDoor(sectionIndex, false)}
-                    />
-                </group>
-            ))}
+            {doorPositions.map((section, sectionIndex) => {
+                const isFirstSection = sectionIndex === 0
+                const isLastSection = sectionIndex === doorPositions.length - 1
+                const totalSections = doorPositions.length
+                
+                
+                const leftDoorIsEdge = isFirstSection || totalSections === 1
+                const rightDoorIsEdge = isLastSection || !section.rightDoor
+                
+                return (
+                    <group key={`door-section-${sectionIndex}`}>
+                        <Door
+                            x={section.leftDoor.x}
+                            width={section.leftDoor.width}
+                            height={height}
+                            depth={depth}
+                            wallThickness={wallThickness}
+                            hingePosition={section.leftDoor.hingePosition}
+                            isLeft={section.leftDoor.isLeft}
+                            materialType={materialType}
+                            texture={texture}
+                            isOpen={openDoors[`${sectionIndex}-left`] || false}
+                            onToggle={() => toggleDoor(sectionIndex, true)}
+                            isEdgeDoor={leftDoorIsEdge}
+                        />
+                        
+                        {section.rightDoor && (
+                            <Door
+                                x={section.rightDoor.x}
+                                width={section.rightDoor.width}
+                                height={height}
+                                depth={depth}
+                                wallThickness={wallThickness}
+                                hingePosition={section.rightDoor.hingePosition}
+                                isLeft={section.rightDoor.isLeft}
+                                materialType={materialType}
+                                texture={texture}
+                                isOpen={openDoors[`${sectionIndex}-right`] || false}
+                                onToggle={() => toggleDoor(sectionIndex, false)}
+                                isEdgeDoor={rightDoorIsEdge}
+                            />
+                        )}
+                    </group>
+                )
+            })}
         </group>
     )
 }
