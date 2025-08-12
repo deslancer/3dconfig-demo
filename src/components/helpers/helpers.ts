@@ -1,3 +1,6 @@
+import { CabinetSection } from "../types/SectionsTypes"
+import { UVTransform } from "../types/UVTypes"
+
 export const getPartitionPositions = (width: number, wallThickness: number) => {
     const sectionWidth = 1.0 
     const availableWidth = width - 2 * wallThickness 
@@ -68,15 +71,7 @@ export const getDoorPositions = (width: number, wallThickness: number) => {
     return doorPositions
 }
 
-export interface UVTransform {
-    offsetX?: number
-    offsetY?: number
-    repeatX?: number
-    repeatY?: number
-    rotation?: number
-    flipX?: boolean
-    flipY?: boolean
-}
+
 
 export const applyUVTransform = (texture: any, transform: UVTransform) => {
     if (!texture) return texture
@@ -107,15 +102,40 @@ export const applyUVTransform = (texture: any, transform: UVTransform) => {
     return texture
 }
 
-export const UV_PRESETS = {
-    NORMAL: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: 0 },
-    FLIP_HORIZONTAL: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: 0, flipX: true },
-    FLIP_VERTICAL: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: 0, flipY: true },
-    ROTATE_90: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: Math.PI / 2 },
-    ROTATE_180: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: Math.PI },
-    ROTATE_270: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: -Math.PI / 2 },
-    TILE_2X2: { repeatX: 2, repeatY: 2, offsetX: 0, offsetY: 0, rotation: 0 },
-    TILE_4X4: { repeatX: 4, repeatY: 4, offsetX: 0, offsetY: 0, rotation: 0 },
-} as const
-
-export type UVPresetName = keyof typeof UV_PRESETS
+export const getCabinetSections = (
+    width: number, 
+    height: number, 
+    depth: number, 
+    wallThickness: number
+): CabinetSection[] => {
+    const partitionPositions = getPartitionPositions(width, wallThickness)
+    const sections: CabinetSection[] = []
+    
+    const availableWidth = width - 2 * wallThickness
+    const numberOfSections = partitionPositions.length + 1
+    const sectionWidth = availableWidth / numberOfSections
+    
+    for (let i = 0; i < numberOfSections; i++) {
+        let sectionX: number
+        
+        if (i === 0) {
+            sectionX = -width / 2 + wallThickness + sectionWidth / 2
+        } else {
+            const leftPartitionX = partitionPositions[i - 1]
+            const rightPartitionX = i < partitionPositions.length ? partitionPositions[i] : width / 2 - wallThickness
+            sectionX = (leftPartitionX + rightPartitionX) / 2
+        }
+        
+        sections.push({
+            id: `section-${i}`,
+            x: sectionX,
+            width: sectionWidth,
+            height: height,
+            depth: depth - 2 * wallThickness,
+            isActive: false,
+            isHovered: false
+        })
+    }
+    
+    return sections
+}

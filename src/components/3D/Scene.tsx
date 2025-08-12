@@ -2,7 +2,9 @@ import { Canvas } from "@react-three/fiber"
 import { Environment, OrbitControls } from "@react-three/drei"
 import { Floor } from "./Floor"
 import { Kast } from "./Kast/Kast"
-import { MaterialType } from "../helpers/Materials";
+import { MaterialType } from "../helpers/Materials"
+import { CabinetSection } from "../types/SectionsTypes"
+
 
 
 interface SceneProps {
@@ -12,10 +14,12 @@ interface SceneProps {
   materialType: MaterialType;
   allDoorsOpen?: boolean;
   onDoorStateChange?: (allOpen: boolean) => void;
+  onSectionChange?: (sections: CabinetSection[]) => void;
+  onActiveSectionChange?: (activeSectionId: string | null) => void;
 }
 
 export const Scene = (props: SceneProps) => {
-    const { width, height, depth, materialType, allDoorsOpen, onDoorStateChange } = props;
+    const { width, height, depth, materialType, allDoorsOpen, onDoorStateChange, onSectionChange, onActiveSectionChange } = props;
     
     const cameraDistance = Math.max(width, height, depth) * 2.5;
     const cameraPosition: [number, number, number] = [
@@ -56,6 +60,8 @@ export const Scene = (props: SceneProps) => {
           materialType={materialType}
           allDoorsOpen={allDoorsOpen}
           onDoorStateChange={onDoorStateChange}
+          onSectionChange={onSectionChange}
+          onActiveSectionChange={onActiveSectionChange}
         />
       </Canvas>
     )

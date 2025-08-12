@@ -4,6 +4,7 @@ import { Scene } from "./components/3D/Scene";
 import { Sidebar } from "./components/UI/Sidebar";
 import { MaterialType } from "./components/helpers/Materials";
 import { DoorClosed, DoorOpen } from "lucide-react";
+import { CabinetSection } from "./components/types/SectionsTypes";
 
 
 const App = () => {
@@ -12,6 +13,17 @@ const App = () => {
   const [depth, setDepth] = useState(630);
   const [materialType, setMaterialType] = useState<MaterialType>(MaterialType.DARK_WOOD);
   const [allDoorsOpen, setAllDoorsOpen] = useState(false);
+  const [sections, setSections] = useState<CabinetSection[]>([]);
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+
+  const handleSectionChange = (newSections: CabinetSection[]) => {
+    setSections(newSections);
+  };
+
+  const handleActiveSectionChange = (sectionId: string | null) => {
+    setActiveSectionId(sectionId);
+    console.log('Active section (DEBUG):', sectionId);
+  };
 
 
   return (
@@ -29,8 +41,18 @@ const App = () => {
             materialType={materialType}
             allDoorsOpen={allDoorsOpen}
             onDoorStateChange={setAllDoorsOpen}
+            onSectionChange={handleSectionChange}
+            onActiveSectionChange={handleActiveSectionChange}
           />
-          <div className="absolute bottom-8 w-full flex items-center justify-center gap-2">
+          <div className="absolute bottom-8 w-full flex items-center justify-center gap-4">
+            {activeSectionId && (
+              <div className="bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg">
+                <span className="text-sm font-medium">
+                  Active section (DEBUG): {activeSectionId.replace('section-', '')}
+                </span>
+              </div>
+            )}
+            
             <div 
               className={`w-12 h-12 rounded-full p-1 flex items-center ${allDoorsOpen ? 'bg-light-cyan hover:bg-light-blue' : 'bg-light-blue hover:bg-light-cyan'}
                 justify-center cursor-pointer transition-colors duration-200`}
