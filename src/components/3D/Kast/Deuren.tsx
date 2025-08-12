@@ -14,6 +14,7 @@ interface DeurenProps {
     texture?: any;
     allDoorsOpen?: boolean;
     onDoorStateChange?: (allOpen: boolean) => void;
+    onSectionClick?: (sectionId: string) => void;
 }
 
 interface DoorProps {
@@ -28,10 +29,12 @@ interface DoorProps {
     texture?: any;
     isOpen: boolean;
     onToggle: () => void;
-    isEdgeDoor?: boolean; 
+    isEdgeDoor?: boolean;
+    sectionIndex: number;
+    onSectionClick?: (sectionId: string) => void;
 }
 
-const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, onToggle, isEdgeDoor = true }: DoorProps) => {
+const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, onToggle, isEdgeDoor = true, sectionIndex, onSectionClick }: DoorProps) => {
     const openAngle = isEdgeDoor ? Math.PI / 2 : (80 * Math.PI / 180)
     const targetAngle = isOpen ? (isLeft ? -openAngle : openAngle) : 0
     const handleMesh = useLoader(GLTFLoader, 'assets/Handle.glb')
@@ -54,11 +57,17 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
     const handleZ = wallThickness / 2 + 0.01 
   
     
+    const handleClick = (e: any) => {
+        e.stopPropagation()
+        onToggle()
+        onSectionClick?.(`section-${sectionIndex}`)
+    }
+
     return (
         <animated.group 
             position={[hingePosition, height / 2 + wallThickness, depth / 2 + wallThickness / 2]}
             rotation-y={rotationY}
-            onClick={onToggle}
+            onClick={handleClick}
         >
             <mesh 
                 position={[-hingeOffset, 0, 0]}
@@ -87,7 +96,7 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
 }
 
 export const Deuren = (props: DeurenProps) => {
-    const { width, height, depth, wallThickness, materialType, texture, allDoorsOpen = false, onDoorStateChange } = props
+    const { width, height, depth, wallThickness, materialType, texture, allDoorsOpen = false, onDoorStateChange, onSectionClick } = props
     const doorPositions = getDoorPositions(width, wallThickness)
     const deurenPosition = 0.1 - wallThickness / 2
     
@@ -160,6 +169,8 @@ export const Deuren = (props: DeurenProps) => {
                             isOpen={openDoors[`${sectionIndex}-left`] || false}
                             onToggle={() => toggleDoor(sectionIndex, true)}
                             isEdgeDoor={leftDoorIsEdge}
+                            sectionIndex={sectionIndex}
+                            onSectionClick={onSectionClick}
                         />
                         
                         {section.rightDoor && (
@@ -176,6 +187,8 @@ export const Deuren = (props: DeurenProps) => {
                                 isOpen={openDoors[`${sectionIndex}-right`] || false}
                                 onToggle={() => toggleDoor(sectionIndex, false)}
                                 isEdgeDoor={rightDoorIsEdge}
+                                sectionIndex={sectionIndex}
+                                onSectionClick={onSectionClick}
                             />
                         )}
                     </group>
