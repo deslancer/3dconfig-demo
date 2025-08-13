@@ -1,4 +1,4 @@
-export interface CabinetSection {
+export interface KastSection {
     id: string
     x: number
     width: number 

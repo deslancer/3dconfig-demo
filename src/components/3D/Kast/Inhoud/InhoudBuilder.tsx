@@ -1,4 +1,4 @@
-export const Inhoud = () => {
+export const InhoudBuilder = () => {
     return (
         <mesh>
             <boxGeometry />

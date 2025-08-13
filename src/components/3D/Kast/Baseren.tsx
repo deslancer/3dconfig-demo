@@ -3,9 +3,10 @@ import { MaterialWrapper, MaterialType } from "../../helpers/Materials"
 import { Kader } from "./Kader"
 import { getPartitionPositions, getCabinetSections } from "../../helpers/helpers"
 import { UV_PRESETS } from "../../types/UVTypes"
-import { CabinetSection } from "../../types/SectionsTypes"
+import { KastSection } from "../../types/SectionsTypes"
 import { SectionWireframe } from "./SectionWireframe"
 import { useState, useEffect, useCallback } from "react"
+import { useActiveSection } from "../../store"
 
 
 interface BaserenProps {
@@ -15,17 +16,17 @@ interface BaserenProps {
     materialType: MaterialType
     wallThickness?: number 
     texture: any
-    onSectionChange?: (sections: CabinetSection[]) => void
+    onSectionChange?: (sections: KastSection[]) => void
     onActiveSectionChange?: (activeSectionId: string | null) => void
     onGetSectionClickHandler?: (handler: (sectionId: string) => void) => void
 }
 
 export const Baseren = (props: BaserenProps) => {
     const { width, height, depth, materialType, wallThickness = 0.02, texture, onSectionChange, onActiveSectionChange, onGetSectionClickHandler } = props
-
+    const { activeSectionId, setActiveSectionId } = useActiveSection()
     const partitionPositions = getPartitionPositions(width, wallThickness)
-    const [sections, setSections] = useState<CabinetSection[]>([])
-    const [activeSectionId, setActiveSectionId] = useState<string | null>(null)
+    const [sections, setSections] = useState<KastSection[]>([])
+
 
     useEffect(() => {
         const newSections = getCabinetSections(width, height, depth, wallThickness)

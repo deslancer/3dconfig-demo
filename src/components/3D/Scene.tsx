@@ -3,8 +3,7 @@ import { Environment, OrbitControls } from "@react-three/drei"
 import { Floor } from "./Floor"
 import { Kast } from "./Kast/Kast"
 import { MaterialType } from "../helpers/Materials"
-import { CabinetSection } from "../types/SectionsTypes"
-
+import { KastSection } from "../types/SectionsTypes"
 
 
 interface SceneProps {
@@ -14,7 +13,7 @@ interface SceneProps {
   materialType: MaterialType;
   allDoorsOpen?: boolean;
   onDoorStateChange?: (allOpen: boolean) => void;
-  onSectionChange?: (sections: CabinetSection[]) => void;
+  onSectionChange?: (sections: KastSection[]) => void;
   onActiveSectionChange?: (activeSectionId: string | null) => void;
 }
 
@@ -29,7 +28,7 @@ export const Scene = (props: SceneProps) => {
     ];
     
     return (
-      <Canvas className="w-full h-full" camera={{ position: cameraPosition, fov: 50, near: 0.1, far: 1000 }} shadows>
+      <Canvas className="w-full h-full" camera={{ position: cameraPosition, fov: 50, near: 0.1, far: 1000 }} shadows frameloop="demand">
         <Environment
         files="/assets/mirrored_hall_1k.hdr"
       
@@ -67,6 +66,7 @@ export const Scene = (props: SceneProps) => {
           onSectionChange={onSectionChange}
           onActiveSectionChange={onActiveSectionChange}
         />
+      
       </Canvas>
     )
 }

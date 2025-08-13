@@ -4,7 +4,7 @@ import { Scene } from "./components/3D/Scene";
 import { Sidebar } from "./components/UI/Sidebar";
 import { MaterialType } from "./components/helpers/Materials";
 import { DoorClosed, DoorOpen } from "lucide-react";
-import { CabinetSection } from "./components/types/SectionsTypes";
+import { KastSection } from "./components/types/SectionsTypes";
 
 
 const App = () => {
@@ -13,10 +13,10 @@ const App = () => {
   const [depth, setDepth] = useState(630);
   const [materialType, setMaterialType] = useState<MaterialType>(MaterialType.DARK_WOOD);
   const [allDoorsOpen, setAllDoorsOpen] = useState(false);
-  const [sections, setSections] = useState<CabinetSection[]>([]);
+  const [sections, setSections] = useState<KastSection[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 
-  const handleSectionChange = (newSections: CabinetSection[]) => {
+  const handleSectionChange = (newSections: KastSection[]) => {
     setSections(newSections);
   };
 
@@ -32,7 +32,6 @@ const App = () => {
       <Header />
 
       <main className="h-screen w-screen grid grid-cols-4 gap-1 relative">
-
         <div className="col-span-3 bg-white rounded-lg shadow-lg relative overflow-hidden h-full">
           <Scene 
             width={width / 1000}  

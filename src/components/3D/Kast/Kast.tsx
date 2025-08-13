@@ -4,7 +4,7 @@ import { Baseren } from "./Baseren"
 import { Kastpoten } from "./Kastpoten"
 import { TextureLoader } from "three"
 import { Deuren } from "./Deuren"
-import { CabinetSection } from "../../types/SectionsTypes"
+import { KastSection } from "../../types/SectionsTypes"
 import { useState, useCallback } from "react"
 
 interface KastProps {
@@ -15,7 +15,7 @@ interface KastProps {
     wallThickness?: number
     allDoorsOpen?: boolean
     onDoorStateChange?: (allOpen: boolean) => void
-    onSectionChange?: (sections: CabinetSection[]) => void
+    onSectionChange?: (sections: KastSection[]) => void
     onActiveSectionChange?: (activeSectionId: string | null) => void
 }
 
