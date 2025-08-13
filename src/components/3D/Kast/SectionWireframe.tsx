@@ -74,13 +74,14 @@ export default function SectionEdgesCustom(props: SectionEdgesCustomProps) {
       const dpr = gl.getPixelRatio()
       lineMaterial.resolution.set(size.width * dpr, size.height * dpr)
     }, [size.width, size.height, gl, lineMaterial])
-  
+
     useEffect(() => {
-      if (isHovered) {
-        lineMaterial.color.set('#ff9800')
+      if (section.isActive || isHovered) {
+        lineMaterial.color.set('#306FC4')
       } else {
-        lineMaterial.color.set(section.isActive ? '#00bcd4' : '#4fc3f7')
+        lineMaterial.color.set('#4fc3f7')
       }
+      
       lineMaterial.needsUpdate = true
     }, [isHovered, section.isActive, lineMaterial])
   
@@ -91,14 +92,31 @@ export default function SectionEdgesCustom(props: SectionEdgesCustomProps) {
       return l
     }, [lineGeometry, lineMaterial])
   
-    const visible = isHovered || section.isActive
-  
+        const visible = isHovered || section.isActive
+
+    const handlePointerEnter = (e: any) => {
+        e.stopPropagation()
+        setHovered(true)
+        onHover(section.id)
+    }
+    
+    const handlePointerLeave = (e: any) => {
+        e.stopPropagation()
+        onHover(null)
+        setHovered(false)
+    }
+    
+    const handleClick = (e: any) => {
+        e.stopPropagation()
+        onClick(section.id)
+    }
+
     return (
       <group position={[section.x, section.height / 2 + wallThickness / 2, 0]}>
         <mesh
-          onPointerEnter={e => { e.stopPropagation(); setHovered(true); onHover(section.id) }}
-          onPointerLeave={e => { e.stopPropagation(); setHovered(false); onHover(null) }}
-          onClick={e => { e.stopPropagation(); onClick(section.id) }}
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+          onClick={handleClick}
         >
           <boxGeometry args={[section.width, section.height, section.depth]} />
           <meshBasicMaterial transparent opacity={0} />

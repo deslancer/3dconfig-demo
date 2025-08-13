@@ -37,6 +37,10 @@ export const Scene = (props: SceneProps) => {
         <OrbitControls 
           makeDefault 
           target={[0, height / 2, 0]}
+          minPolarAngle={0}
+          maxPolarAngle={Math.PI / 2}
+          maxDistance={10}
+          minDistance={2.5}
         />
         <directionalLight 
           position={[5, 10, 5]} 

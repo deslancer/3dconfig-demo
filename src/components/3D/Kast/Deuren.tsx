@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useSpring, animated, easings } from "@react-spring/three"
-import { MaterialType, Material } from "../../helpers/Materials"
+import { MaterialType, MaterialWrapper } from "../../helpers/Materials"
 import { getDoorPositions } from "../../helpers/helpers"
 import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
@@ -76,7 +76,7 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
             >
                 <boxGeometry args={[width, height - wallThickness, wallThickness]} />
                 {texture ? (
-                    <Material 
+                    <MaterialWrapper 
                         materialType={materialType} 
                         map={texture}
                     />

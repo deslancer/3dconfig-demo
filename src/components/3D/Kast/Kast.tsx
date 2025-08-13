@@ -5,6 +5,7 @@ import { Kastpoten } from "./Kastpoten"
 import { TextureLoader } from "three"
 import { Deuren } from "./Deuren"
 import { CabinetSection } from "../../types/SectionsTypes"
+import { useState, useCallback } from "react"
 
 interface KastProps {
     width: number
@@ -20,7 +21,14 @@ interface KastProps {
 
 export const Kast = (props: KastProps) => {
     const { width, height, depth, materialType, wallThickness = 0.02, allDoorsOpen, onDoorStateChange, onSectionChange, onActiveSectionChange } = props
-    const colorMapDarkWood = useLoader(TextureLoader, '/assets/dark_wood.jpg')  
+    const colorMapDarkWood = useLoader(TextureLoader, '/assets/dark_wood.jpg')
+    
+    const [sectionClickHandler, setSectionClickHandler] = useState<((sectionId: string) => void) | null>(null)
+
+    const handleGetSectionClickHandler = useCallback((handler: (sectionId: string) => void) => {
+        setSectionClickHandler(() => handler)
+    }, [])
+    
     return (
         <group>
             <Baseren 
@@ -32,6 +40,7 @@ export const Kast = (props: KastProps) => {
                 texture={colorMapDarkWood}
                 onSectionChange={onSectionChange}
                 onActiveSectionChange={onActiveSectionChange}
+                onGetSectionClickHandler={handleGetSectionClickHandler}
             />
             <Deuren 
                 width={width} 
@@ -42,7 +51,7 @@ export const Kast = (props: KastProps) => {
                 texture={colorMapDarkWood}
                 allDoorsOpen={allDoorsOpen}
                 onDoorStateChange={onDoorStateChange}
-                onSectionClick={onActiveSectionChange}
+                onSectionClick={sectionClickHandler || undefined}
             />
             <Kastpoten width={width} height={height} depth={depth} />
         </group>

@@ -92,7 +92,7 @@ export const PhysicalMaterial = ({ materialType, map, uvTransform }: MaterialPro
   return <meshPhysicalMaterial {...config} map={transformedMap} />
 }
 
-export const Material = ({ materialType, map, uvTransform }: MaterialProps) => {
+export const MaterialWrapper = ({ materialType, map, uvTransform }: MaterialProps) => {
   if (materialType === MaterialType.GLASS) {
     return <PhysicalMaterial materialType={materialType} map={map} uvTransform={uvTransform} />
   }
