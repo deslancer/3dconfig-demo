@@ -1,9 +1,10 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import { useSpring, animated, easings } from "@react-spring/three"
 import { MaterialType, MaterialWrapper } from "../../helpers/Materials"
 import { getDoorPositions } from "../../helpers/helpers"
 import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { useAppStore } from "../../store/appStore"
 
 interface DeurenProps {
     width: number;
@@ -35,9 +36,22 @@ interface DoorProps {
 }
 
 const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, onToggle, isEdgeDoor = true, sectionIndex, onSectionClick }: DoorProps) => {
-    const openAngle = isEdgeDoor ? Math.PI / 2 : (80 * Math.PI / 180)
-    const targetAngle = isOpen ? (isLeft ? -openAngle : openAngle) : 0
+    const openAngle = isEdgeDoor ? Math.PI / 2 : (84 * Math.PI / 180)
+    const [shouldAnimate, setShouldAnimate] = useState(isOpen)
+    const targetAngle = shouldAnimate ? (isLeft ? -openAngle : openAngle) : 0
     const handleMesh = useLoader(GLTFLoader, 'assets/Handle.glb')
+
+    React.useEffect(() => {
+        if (isOpen) {
+            setShouldAnimate(true)
+        } else {
+            const timer = setTimeout(() => {
+                setShouldAnimate(false)
+            }, 600)
+            
+            return () => clearTimeout(timer)
+        }
+    }, [isOpen])
 
     const { rotationY } = useSpring({
         rotationY: targetAngle,
@@ -99,6 +113,7 @@ export const Deuren = (props: DeurenProps) => {
     const { width, height, depth, wallThickness, materialType, texture, allDoorsOpen = false, onDoorStateChange, onSectionClick } = props
     const doorPositions = getDoorPositions(width, wallThickness)
     const deurenPosition = 0.1 - wallThickness / 2
+    const { setDrawerState } = useAppStore()
     
     const [openDoors, setOpenDoors] = useState<{[key: string]: boolean}>({})
     
@@ -114,14 +129,39 @@ export const Deuren = (props: DeurenProps) => {
             setOpenDoors(newState)
         }
     }, [allDoorsOpen, doorPositions])
+
+    React.useEffect(() => {
+        if (allDoorsOpen !== undefined) {
+            const timer = setTimeout(() => {
+                doorPositions.forEach((_, sectionIndex) => {
+                    setDrawerState(`section-${sectionIndex}`, allDoorsOpen)
+                })
+            }, 0)
+            
+            return () => clearTimeout(timer)
+        }
+    }, [allDoorsOpen, doorPositions.length, setDrawerState])
     
-    const toggleDoor = (sectionIndex: number, isLeft: boolean) => {
+    const toggleDoor = useCallback((sectionIndex: number, isLeft: boolean) => {
         const key = `${sectionIndex}-${isLeft ? 'left' : 'right'}`
+        
         setOpenDoors(prev => {
             const newState = {
                 ...prev,
                 [key]: !prev[key]
             }
+            
+            const sectionKeys = [`${sectionIndex}-left`]
+            const section = doorPositions[sectionIndex]
+            if (section?.rightDoor) {
+                sectionKeys.push(`${sectionIndex}-right`)
+            }
+            
+            const sectionHasOpenDoor = sectionKeys.some(k => newState[k])
+            
+            setTimeout(() => {
+                setDrawerState(`section-${sectionIndex}`, sectionHasOpenDoor)
+            }, 0)
             
             const allKeys = doorPositions.flatMap((section, idx) => {
                 const keys = [`${idx}-left`]
@@ -141,7 +181,7 @@ export const Deuren = (props: DeurenProps) => {
             
             return newState
         })
-    }
+    }, [doorPositions, onDoorStateChange, setDrawerState])
     
     return (
         <group position={[0, deurenPosition, 0]}>

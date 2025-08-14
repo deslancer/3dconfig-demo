@@ -61,6 +61,23 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.swal2-confirm{
+  background-color: #306FC4;
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+}
+.swal2-confirm:focus{
+  outline: none;
+}
+.swal2-confirm:hover{
+  background-color: #24A8BB;
+  color: #fff;
+}
+.swal2-cancel{
+  background-color: #306FC4;
+  color: #fff;
+}
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

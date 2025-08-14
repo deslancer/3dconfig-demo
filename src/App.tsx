@@ -44,14 +44,7 @@ const App = () => {
             onActiveSectionChange={handleActiveSectionChange}
           />
           <div className="absolute bottom-8 w-full flex items-center justify-center gap-4">
-            {activeSectionId && (
-              <div className="bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg">
-                <span className="text-sm font-medium">
-                  Active section (DEBUG): {activeSectionId.replace('section-', '')}
-                </span>
-              </div>
-            )}
-            
+          
             <div 
               className={`w-12 h-12 rounded-full p-1 flex items-center ${allDoorsOpen ? 'bg-light-cyan hover:bg-light-blue' : 'bg-light-blue hover:bg-light-cyan'}
                 justify-center cursor-pointer transition-colors duration-200`}

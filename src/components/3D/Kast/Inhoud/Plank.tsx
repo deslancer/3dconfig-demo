@@ -17,7 +17,7 @@ export const Plank = (props: PlankProps) => {
     return (
         <mesh position={position} castShadow>
             <boxGeometry args={[width, height, depth]} />
-            <MaterialWrapper materialType={materialType} map={colorMapDarkWood} uvTransform={UV_PRESETS.NORMAL} />
+            <MaterialWrapper materialType={materialType} map={colorMapDarkWood} uvTransform={UV_PRESETS.ROTATE_90} />
         </mesh>
     )
 }

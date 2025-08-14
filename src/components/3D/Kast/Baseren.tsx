@@ -5,6 +5,7 @@ import { getPartitionPositions, getCabinetSections } from "../../helpers/helpers
 import { UV_PRESETS } from "../../types/UVTypes"
 import { KastSection } from "../../types/SectionsTypes"
 import { SectionWireframe } from "./SectionWireframe"
+import { InhoudBuilder } from "./Inhoud/InhoudBuilder"
 import { useState, useEffect, useCallback } from "react"
 import { useActiveSection } from "../../store"
 
@@ -133,6 +134,22 @@ export const Baseren = (props: BaserenProps) => {
                 onSectionHover={handleSectionHover}
                 onSectionClick={handleSectionClick}
             />
+
+            {/* Render inhoud voor elke sectie */}
+            {sections.map((section) => (
+                <group 
+                    key={`content-${section.id}`}
+                    position={[section.x, height / 2 + wallThickness / 2, 0]}
+                >
+                    <InhoudBuilder
+                        sectionId={section.id}
+                        sectionWidth={section.width}
+                        sectionHeight={section.height}
+                        sectionDepth={section.depth}
+                        materialType={materialType}
+                    />
+                </group>
+            ))}
         </group>
         
     )
