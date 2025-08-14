@@ -15,7 +15,7 @@ interface DeurenProps {
     texture?: any;
     allDoorsOpen?: boolean;
     onDoorStateChange?: (allOpen: boolean) => void;
-    onSectionClick?: (sectionId: string) => void;
+    onGetSectionClickHandler?: (handler: (sectionId: string) => void) => void;
 }
 
 interface DoorProps {
@@ -29,13 +29,10 @@ interface DoorProps {
     materialType: MaterialType;
     texture?: any;
     isOpen: boolean;
-    onToggle: () => void;
     isEdgeDoor?: boolean;
-    sectionIndex: number;
-    onSectionClick?: (sectionId: string) => void;
 }
 
-const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, onToggle, isEdgeDoor = true, sectionIndex, onSectionClick }: DoorProps) => {
+const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, isEdgeDoor = true }: DoorProps) => {
     const openAngle = isEdgeDoor ? Math.PI / 2 : (84 * Math.PI / 180)
     const [shouldAnimate, setShouldAnimate] = useState(isOpen)
     const targetAngle = shouldAnimate ? (isLeft ? -openAngle : openAngle) : 0
@@ -71,17 +68,10 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
     const handleZ = wallThickness / 2 + 0.01 
   
     
-    const handleClick = (e: any) => {
-        e.stopPropagation()
-        onToggle()
-        onSectionClick?.(`section-${sectionIndex}`)
-    }
-
     return (
         <animated.group 
             position={[hingePosition, height / 2 + wallThickness, depth / 2 + wallThickness / 2]}
             rotation-y={rotationY}
-            onClick={handleClick}
         >
             <mesh 
                 position={[-hingeOffset, 0, 0]}
@@ -110,15 +100,17 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
 }
 
 export const Deuren = (props: DeurenProps) => {
-    const { width, height, depth, wallThickness, materialType, texture, allDoorsOpen = false, onDoorStateChange, onSectionClick } = props
+    const { width, height, depth, wallThickness, materialType, texture, allDoorsOpen = false, onDoorStateChange, onGetSectionClickHandler } = props
     const doorPositions = getDoorPositions(width, wallThickness)
     const deurenPosition = 0.1 - wallThickness / 2
     const { setDrawerState } = useAppStore()
     
     const [openDoors, setOpenDoors] = useState<{[key: string]: boolean}>({})
+    const [isToggling, setIsToggling] = useState(false)
+    const [lastAllDoorsState, setLastAllDoorsState] = useState<boolean | undefined>(allDoorsOpen)
     
     React.useEffect(() => {
-        if (allDoorsOpen !== undefined) {
+        if (allDoorsOpen !== undefined && allDoorsOpen !== lastAllDoorsState) {
             const newState: {[key: string]: boolean} = {}
             doorPositions.forEach((section, sectionIndex) => {
                 newState[`${sectionIndex}-left`] = allDoorsOpen
@@ -127,11 +119,12 @@ export const Deuren = (props: DeurenProps) => {
                 }
             })
             setOpenDoors(newState)
+            setLastAllDoorsState(allDoorsOpen)
         }
-    }, [allDoorsOpen, doorPositions])
+    }, [allDoorsOpen, doorPositions, lastAllDoorsState])
 
     React.useEffect(() => {
-        if (allDoorsOpen !== undefined) {
+        if (allDoorsOpen !== undefined && allDoorsOpen === lastAllDoorsState) {
             const timer = setTimeout(() => {
                 doorPositions.forEach((_, sectionIndex) => {
                     setDrawerState(`section-${sectionIndex}`, allDoorsOpen)
@@ -140,48 +133,54 @@ export const Deuren = (props: DeurenProps) => {
             
             return () => clearTimeout(timer)
         }
-    }, [allDoorsOpen, doorPositions.length, setDrawerState])
-    
-    const toggleDoor = useCallback((sectionIndex: number, isLeft: boolean) => {
-        const key = `${sectionIndex}-${isLeft ? 'left' : 'right'}`
+    }, [allDoorsOpen, doorPositions.length, setDrawerState, lastAllDoorsState])
+
+    const toggleSectionDoors = useCallback((sectionId: string) => {
+        if (isToggling) {
+            return
+        }
+        
+        const sectionIndex = parseInt(sectionId.split('-')[1])
+        
+        if (isNaN(sectionIndex) || sectionIndex >= doorPositions.length) {
+            return
+        }
+        
+        setIsToggling(true)
         
         setOpenDoors(prev => {
-            const newState = {
-                ...prev,
-                [key]: !prev[key]
-            }
-            
             const sectionKeys = [`${sectionIndex}-left`]
             const section = doorPositions[sectionIndex]
             if (section?.rightDoor) {
                 sectionKeys.push(`${sectionIndex}-right`)
             }
             
-            const sectionHasOpenDoor = sectionKeys.some(k => newState[k])
+            const sectionHasOpenDoor = sectionKeys.some(k => prev[k])
             
-            setTimeout(() => {
-                setDrawerState(`section-${sectionIndex}`, sectionHasOpenDoor)
-            }, 0)
-            
-            const allKeys = doorPositions.flatMap((section, idx) => {
-                const keys = [`${idx}-left`]
-                if (section.rightDoor) {
-                    keys.push(`${idx}-right`)
-                }
-                return keys
+            const newState = { ...prev }
+            sectionKeys.forEach(key => {
+                newState[key] = !sectionHasOpenDoor
             })
             
-            const allOpen = allKeys.every(k => newState[k])
-            const allClosed = allKeys.every(k => !newState[k])
-            
-            if (onDoorStateChange) {
-                if (allOpen) onDoorStateChange(true)
-                else if (allClosed) onDoorStateChange(false)
-            }
+            setTimeout(() => {
+                setDrawerState(`section-${sectionIndex}`, !sectionHasOpenDoor)
+            }, 0)
             
             return newState
         })
-    }, [doorPositions, onDoorStateChange, setDrawerState])
+        
+        setTimeout(() => {
+            setIsToggling(false)
+        }, 100)
+    }, [doorPositions, onDoorStateChange, setDrawerState, isToggling])
+
+    const handleSectionClick = useCallback((sectionId: string) => {
+        toggleSectionDoors(sectionId)
+    }, [toggleSectionDoors])
+
+    React.useEffect(() => {
+        onGetSectionClickHandler?.(handleSectionClick)
+    }, [handleSectionClick, onGetSectionClickHandler])
     
     return (
         <group position={[0, deurenPosition, 0]}>
@@ -207,10 +206,7 @@ export const Deuren = (props: DeurenProps) => {
                             materialType={materialType}
                             texture={texture}
                             isOpen={openDoors[`${sectionIndex}-left`] || false}
-                            onToggle={() => toggleDoor(sectionIndex, true)}
                             isEdgeDoor={leftDoorIsEdge}
-                            sectionIndex={sectionIndex}
-                            onSectionClick={onSectionClick}
                         />
                         
                         {section.rightDoor && (
@@ -225,10 +221,7 @@ export const Deuren = (props: DeurenProps) => {
                                 materialType={materialType}
                                 texture={texture}
                                 isOpen={openDoors[`${sectionIndex}-right`] || false}
-                                onToggle={() => toggleDoor(sectionIndex, false)}
                                 isEdgeDoor={rightDoorIsEdge}
-                                sectionIndex={sectionIndex}
-                                onSectionClick={onSectionClick}
                             />
                         )}
                     </group>

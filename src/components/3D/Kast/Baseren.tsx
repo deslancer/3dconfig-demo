@@ -20,10 +20,11 @@ interface BaserenProps {
     onSectionChange?: (sections: KastSection[]) => void
     onActiveSectionChange?: (activeSectionId: string | null) => void
     onGetSectionClickHandler?: (handler: (sectionId: string) => void) => void
+    sectionClickHandler?: (sectionId: string) => void
 }
 
 export const Baseren = (props: BaserenProps) => {
-    const { width, height, depth, materialType, wallThickness = 0.02, texture, onSectionChange, onActiveSectionChange, onGetSectionClickHandler } = props
+    const { width, height, depth, materialType, wallThickness = 0.02, texture, onSectionChange, onActiveSectionChange, onGetSectionClickHandler, sectionClickHandler } = props
     const { activeSectionId, setActiveSectionId } = useActiveSection()
     const partitionPositions = getPartitionPositions(width, wallThickness)
     const [sections, setSections] = useState<KastSection[]>([])
@@ -132,7 +133,7 @@ export const Baseren = (props: BaserenProps) => {
                 sections={sections}
                 wallThickness={wallThickness}
                 onSectionHover={handleSectionHover}
-                onSectionClick={handleSectionClick}
+                onSectionClick={sectionClickHandler || handleSectionClick}
             />
 
             {/* Render inhoud voor elke sectie */}

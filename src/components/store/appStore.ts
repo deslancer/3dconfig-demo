@@ -10,6 +10,7 @@ const initialConfiguration: AppConfiguration = {
   woodMaterial: 'dark_wenge_wood',
   sectionsContent: {},
   drawerStates: {},
+  sectionInhoudTypes: {},
 }
 
 export const useAppStore = create<AppStore>()(
@@ -41,7 +42,7 @@ export const useAppStore = create<AppStore>()(
 
       setDrawerState: (sectionId: string, isExtended: boolean) => {
         const state = get()
-        // Избегаем ненужных обновлений, если состояние не изменилось
+        
         if (state.drawerStates[sectionId] === isExtended) {
           return
         }
@@ -49,6 +50,16 @@ export const useAppStore = create<AppStore>()(
           drawerStates: {
             ...state.drawerStates,
             [sectionId]: isExtended
+          }
+        })
+      },
+
+      setSectionInhoudType: (sectionId: string, inhoudType) => {
+        const state = get()
+        set({
+          sectionInhoudTypes: {
+            ...state.sectionInhoudTypes,
+            [sectionId]: inhoudType
           }
         })
       },
@@ -66,6 +77,7 @@ export const useAppStore = create<AppStore>()(
         woodMaterial: state.woodMaterial,
         sectionsContent: state.sectionsContent,
         drawerStates: state.drawerStates,
+        sectionInhoudTypes: state.sectionInhoudTypes,
       })
     }
   )

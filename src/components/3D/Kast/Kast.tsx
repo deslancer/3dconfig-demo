@@ -23,11 +23,21 @@ export const Kast = (props: KastProps) => {
     const { width, height, depth, materialType, wallThickness = 0.02, allDoorsOpen, onDoorStateChange, onSectionChange, onActiveSectionChange } = props
     const colorMapDarkWood = useLoader(TextureLoader, '/assets/dark_wood.jpg')
     
-    const [sectionClickHandler, setSectionClickHandler] = useState<((sectionId: string) => void) | null>(null)
+    const [baseSectionClickHandler, setBaseSectionClickHandler] = useState<((sectionId: string) => void) | null>(null)
+    const [doorSectionClickHandler, setDoorSectionClickHandler] = useState<((sectionId: string) => void) | null>(null)
 
-    const handleGetSectionClickHandler = useCallback((handler: (sectionId: string) => void) => {
-        setSectionClickHandler(() => handler)
+    const handleGetBaseSectionClickHandler = useCallback((handler: (sectionId: string) => void) => {
+        setBaseSectionClickHandler(() => handler)
     }, [])
+
+    const handleGetDoorSectionClickHandler = useCallback((handler: (sectionId: string) => void) => {
+        setDoorSectionClickHandler(() => handler)
+    }, [])
+
+    const combinedSectionClickHandler = useCallback((sectionId: string) => {
+        doorSectionClickHandler?.(sectionId)
+        baseSectionClickHandler?.(sectionId)
+    }, [doorSectionClickHandler, baseSectionClickHandler])
     
     return (
         <group>
@@ -40,7 +50,8 @@ export const Kast = (props: KastProps) => {
                 texture={colorMapDarkWood}
                 onSectionChange={onSectionChange}
                 onActiveSectionChange={onActiveSectionChange}
-                onGetSectionClickHandler={handleGetSectionClickHandler}
+                onGetSectionClickHandler={handleGetBaseSectionClickHandler}
+                sectionClickHandler={combinedSectionClickHandler}
             />
             <Deuren 
                 width={width} 
@@ -51,7 +62,7 @@ export const Kast = (props: KastProps) => {
                 texture={colorMapDarkWood}
                 allDoorsOpen={allDoorsOpen}
                 onDoorStateChange={onDoorStateChange}
-                onSectionClick={sectionClickHandler || undefined}
+                onGetSectionClickHandler={handleGetDoorSectionClickHandler}
             />
             <Kastpoten width={width} height={height} depth={depth} />
         </group>

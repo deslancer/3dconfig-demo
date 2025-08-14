@@ -1,19 +1,21 @@
 
+import { InhoudType } from '../types/InhoudTypes'
+
 export interface SectionContent {
   planken: number
   drawers: number
 }
 
 export interface AppConfiguration {
-  // Основные размеры шкафа
+
   width: number
   height: number
   depth: number
   activeSectionId: string | null
   woodMaterial: string
   sectionsContent: Record<string, SectionContent>
-  // Состояние выдвижения ящиков по секциям
   drawerStates: Record<string, boolean>
+  sectionInhoudTypes: Record<string, InhoudType>
 }
 
 export interface AppActions {
@@ -22,6 +24,7 @@ export interface AppActions {
   setWoodMaterial: (material: string) => void
   setSectionContent: (sectionId: string, content: SectionContent) => void
   setDrawerState: (sectionId: string, isExtended: boolean) => void
+  setSectionInhoudType: (sectionId: string, inhoudType: InhoudType) => void
   resetConfiguration: () => void
 }
 

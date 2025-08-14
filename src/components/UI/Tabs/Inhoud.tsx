@@ -1,5 +1,4 @@
 
-import { useState } from "react"
 import { InhoudType } from "../../types/InhoudTypes"
 import { useActiveSection } from "../../store"
 import { INHOUD_CONFIGS } from "../../helpers/inhoud_configs"
@@ -8,8 +7,10 @@ import Swal from "sweetalert2"
 
 export const Inhoud = () => {
     const { activeSectionId } = useActiveSection()
-    const { setSectionContent, sectionsContent } = useAppStore()
-    const [currentInhoudType, setCurrentInhoudType] = useState<InhoudType>('INHOUD_0')
+    const { setSectionContent, sectionsContent, setSectionInhoudType, sectionInhoudTypes } = useAppStore()
+    
+    // Получаем текущий тип inhoud для активной секции из store или используем дефолтный
+    const currentInhoudType = activeSectionId ? (sectionInhoudTypes[activeSectionId] || 'INHOUD_0') : 'INHOUD_0'
 
     const handleInhoudChange = (id: InhoudType) => {
         if (!activeSectionId) {
@@ -24,9 +25,7 @@ export const Inhoud = () => {
 
         const config = INHOUD_CONFIGS[id]
         setSectionContent(activeSectionId, config)
-        setCurrentInhoudType(id)
-        
-        console.log(`Inhoud ${id} voor sectie ${activeSectionId}:`, config)
+        setSectionInhoudType(activeSectionId, id)
     }
 
     const currentConfig = activeSectionId ? sectionsContent[activeSectionId] : null

@@ -22,7 +22,6 @@ const App = () => {
 
   const handleActiveSectionChange = (sectionId: string | null) => {
     setActiveSectionId(sectionId);
-    console.log('Active section (DEBUG):', sectionId);
   };
 
 
