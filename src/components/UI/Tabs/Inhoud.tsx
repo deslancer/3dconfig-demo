@@ -7,9 +7,8 @@ import Swal from "sweetalert2"
 
 export const Inhoud = () => {
     const { activeSectionId } = useActiveSection()
-    const { setSectionContent, sectionsContent, setSectionInhoudType, sectionInhoudTypes } = useAppStore()
+    const { setSectionContent, sectionsContent, setSectionInhoudType, sectionInhoudTypes, theme } = useAppStore()
     
-    // Получаем текущий тип inhoud для активной секции из store или используем дефолтный
     const currentInhoudType = activeSectionId ? (sectionInhoudTypes[activeSectionId] || 'INHOUD_0') : 'INHOUD_0'
 
     const handleInhoudChange = (id: InhoudType) => {
@@ -18,6 +17,8 @@ export const Inhoud = () => {
                 icon: "error",
                 title: "Oeps...",
                 text: "Kies eerst een sectie!",
+                background: theme === 'dark' ? '#15151a' : '#FFFFFF',
+                color: theme === 'dark' ? '#e5e5e5' : '#15151a',
                 buttonsStyling: false,
               });
             return

@@ -1,4 +1,3 @@
-import { MaterialWrapper, MaterialType } from "../../helpers/Materials";
 
 interface KastpotenProps {
     width: number;

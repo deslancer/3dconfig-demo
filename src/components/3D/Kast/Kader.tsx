@@ -1,4 +1,3 @@
-// import { RoundedBox } from "@react-three/drei"
 import { getPartitionPositions } from "../../helpers/helpers"
 import { MaterialWrapper, MaterialType } from "../../helpers/Materials"
 import { UV_PRESETS } from "../../types/UVTypes"

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./components/UI/Header";
 import { Scene } from "./components/3D/Scene";
 import { Sidebar } from "./components/UI/Sidebar";
 import { MaterialType } from "./components/helpers/Materials";
 import { DoorClosed, DoorOpen } from "lucide-react";
 import { KastSection } from "./components/types/SectionsTypes";
+import { useAppStore } from "./components/store/appStore";
 
 
 const App = () => {
@@ -13,8 +14,18 @@ const App = () => {
   const [depth, setDepth] = useState(630);
   const [materialType, setMaterialType] = useState<MaterialType>(MaterialType.DARK_WOOD);
   const [allDoorsOpen, setAllDoorsOpen] = useState(false);
-  const [sections, setSections] = useState<KastSection[]>([]);
-  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [, setSections] = useState<KastSection[]>([]);
+  const [, setActiveSectionId] = useState<string | null>(null);
+
+  const { theme } = useAppStore();
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   const handleSectionChange = (newSections: KastSection[]) => {
     setSections(newSections);
@@ -26,12 +37,12 @@ const App = () => {
 
 
   return (
-    <div className="h-screen w-screen bg-dark-gray relative">
+    <div className="h-screen w-screen bg-white dark:bg-dark-theme relative transition-colors duration-300">
 
       <Header />
 
       <main className="h-screen w-screen grid grid-cols-4 gap-1 relative">
-        <div className="col-span-3 bg-white rounded-lg shadow-lg relative overflow-hidden h-full">
+        <div className="col-span-3 bg-white dark:bg-dark-surface rounded-lg shadow-lg relative overflow-hidden h-full">
           <Scene 
             width={width / 1000}  
             height={height / 1000}
@@ -60,7 +71,7 @@ const App = () => {
           </div>
         </div>
         
-        <div className="col-span-1 bg-white rounded-lg shadow-lg p-4 overflow-y-auto h-full">
+        <div className="col-span-1 bg-white dark:bg-dark-surface rounded-lg shadow-lg p-4 overflow-y-auto h-full">
           <Sidebar 
             width={width}
             height={height}

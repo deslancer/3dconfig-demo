@@ -1,6 +1,8 @@
 
 import { InhoudType } from '../types/InhoudTypes'
 
+export type Theme = 'light' | 'dark'
+
 export interface SectionContent {
   planken: number
   drawers: number
@@ -16,6 +18,7 @@ export interface AppConfiguration {
   sectionsContent: Record<string, SectionContent>
   drawerStates: Record<string, boolean>
   sectionInhoudTypes: Record<string, InhoudType>
+  theme: Theme
 }
 
 export interface AppActions {
@@ -25,6 +28,8 @@ export interface AppActions {
   setSectionContent: (sectionId: string, content: SectionContent) => void
   setDrawerState: (sectionId: string, isExtended: boolean) => void
   setSectionInhoudType: (sectionId: string, inhoudType: InhoudType) => void
+  toggleTheme: () => void
+  setTheme: (theme: Theme) => void
   resetConfiguration: () => void
 }
 

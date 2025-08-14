@@ -3,6 +3,7 @@ import { useState } from "react";
 import { MaterialType } from "../helpers/Materials";
 import { Afmetingen } from "./Tabs/Afmetingen";
 import { Inhoud } from "./Tabs/Inhoud";
+import { ThemeToggle } from "./ThemeToggle";
 
 
 interface SidebarProps {
@@ -32,12 +33,16 @@ export const Sidebar = (props: SidebarProps) => {
     ]
   return (
     <div className="h-full flex flex-col">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Instellingen</h2>
+      <div className="flex items-center justify-between">
+      <h2 className="text-xl font-semibold text-gray-800 dark:text-dark-text mb-4">Instellingen</h2>
+        <ThemeToggle />
+      </div>
+      
       <div className="flex items-center w-full gap-4 mb-4">
         {tabs.map((tab) => (
             <div key={tab.label} 
             onClick={() => setActiveTab(tab.label)} 
-            className={`font-medium text-gray-800  border-gray-800 px-4 py-1 cursor-pointer hover:text-light-blue transition-colors duration-300 ${activeTab === tab.label ? 'text-light-blue border-b-2' : ''}`}>
+            className={`font-medium text-gray-800 dark:text-dark-text border-gray-800 dark:border-dark-text px-4 py-1 cursor-pointer hover:text-light-blue transition-colors duration-300 ${activeTab === tab.label ? 'text-light-blue border-b-2' : ''}`}>
                 {tab.label}
             </div>
         ))}

@@ -11,6 +11,7 @@ const initialConfiguration: AppConfiguration = {
   sectionsContent: {},
   drawerStates: {},
   sectionInhoudTypes: {},
+  theme: 'dark',
 }
 
 export const useAppStore = create<AppStore>()(
@@ -64,6 +65,13 @@ export const useAppStore = create<AppStore>()(
         })
       },
 
+      toggleTheme: () => {
+        const state = get()
+        set({ theme: state.theme === 'light' ? 'dark' : 'light' })
+      },
+
+      setTheme: (theme) => set({ theme }),
+
       resetConfiguration: () => set(initialConfiguration)
     }),
     {
@@ -78,6 +86,7 @@ export const useAppStore = create<AppStore>()(
         sectionsContent: state.sectionsContent,
         drawerStates: state.drawerStates,
         sectionInhoudTypes: state.sectionInhoudTypes,
+        theme: state.theme,
       })
     }
   )
