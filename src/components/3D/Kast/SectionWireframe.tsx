@@ -1,5 +1,5 @@
 import { useRef, useMemo, useState, useEffect } from 'react'
-import { CabinetSection } from '../../types/SectionsTypes'
+import { KastSection } from '../../types/SectionsTypes'
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
 import { useThree } from '@react-three/fiber'
@@ -7,14 +7,14 @@ import { Line2 } from 'three/examples/jsm/lines/Line2.js'
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js'
 
 interface SectionWireframeProps {
-    sections: CabinetSection[]
+    sections: KastSection[]
     wallThickness: number
     onSectionHover: (sectionId: string | null) => void
     onSectionClick: (sectionId: string) => void
 }
 
 interface SectionEdgesCustomProps {
-    section: CabinetSection
+    section: KastSection
     wallThickness: number
     onHover: (sectionId: string | null) => void
     onClick: (sectionId: string) => void

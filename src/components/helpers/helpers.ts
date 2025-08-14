@@ -1,4 +1,4 @@
-import { CabinetSection } from "../types/SectionsTypes"
+import { KastSection } from "../types/SectionsTypes"
 import { UVTransform } from "../types/UVTypes"
 
 export const getPartitionPositions = (width: number, wallThickness: number) => {
@@ -107,9 +107,9 @@ export const getCabinetSections = (
     height: number, 
     depth: number, 
     wallThickness: number
-): CabinetSection[] => {
+): KastSection[] => {
     const partitionPositions = getPartitionPositions(width, wallThickness)
-    const sections: CabinetSection[] = []
+    const sections: KastSection[] = []
     
     const availableWidth = width - 2 * wallThickness
     const numberOfSections = partitionPositions.length + 1

@@ -1,0 +1,1 @@
+export type InhoudType = 'INHOUD_0' | 'INHOUD_1' | 'INHOUD_2' | 'INHOUD_3'

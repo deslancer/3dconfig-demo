@@ -1,100 +1,142 @@
-
-import { UVTransform, applyUVTransform } from './helpers'
+import { applyUVTransform } from './helpers'
+import { UVTransform } from '../types/UVTypes'
+import { useLoader } from "@react-three/fiber"
+import { TextureLoader, Texture, Vector2 } from "three"
+import { useMemo } from 'react'
 
 export enum MaterialType {
-  CHROME = 'chrome',
-  BLACK_METAL = 'blackMetal',
-  DARK_WOOD = 'darkWood',
-  LIGHT_WOOD = 'lightWood',
-  GLASS = 'glass'
+  DARK_WOOD = 'Dark',
+  WENGE_WOOD = 'Wenge',
+  WHITE = 'White',
 }
 
+export const textureAssets = {
+  [MaterialType.DARK_WOOD]: {
+    map: '/assets/dark_wood.jpg',
+    normalMap: '/assets/dark_wood_normal.png'
+  },
+  [MaterialType.WENGE_WOOD]: {
+    map: '/assets/dark_wenge_wood.jpg',
+    normalMap: '/assets/dark_wenge_wood_normal.jpg' 
+  },
+  [MaterialType.WHITE]: {
+    map: null,
+    normalMap: null
+  },
+}
 
 export const materialConfigs = {
-  [MaterialType.CHROME]: {
-    color: '#c0c0c0',
-    metalness: 1.0,
-    roughness: 0.15,
-    envMapIntensity: 1.0,
-  },
-  [MaterialType.BLACK_METAL]: {
-    color: '#1a1a1a',
-    metalness: 0.9,
-    roughness: 0.3,
-    envMapIntensity: 1.0,
+  [MaterialType.WHITE]: {
+    color: '#ffffff',
+    metalness: 0.1,
+    roughness: 0.5,
+    envMapIntensity: 0.5,
   },
   [MaterialType.DARK_WOOD]: {
     metalness: 0.1,
     roughness: 0.5,
     envMapIntensity: 0.5,
   },
-  [MaterialType.LIGHT_WOOD]: {
+  [MaterialType.WENGE_WOOD]: {
     color: '#d2b48c',
     metalness: 0.1,
     roughness: 0.5,
     envMapIntensity: 0.5,
-  },
-  [MaterialType.GLASS]: {
-    color: '#ffffff',
-    metalness: 0.0,
-    roughness: 0.0,
-    transmission: 0.9,
-    transparent: true,
-    opacity: 0.3,
-    envMapIntensity: 1.0,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.0,
   }
 }
 
 export const materialNames = {
-  [MaterialType.CHROME]: 'Chrome',
-  [MaterialType.BLACK_METAL]: 'Black Metal',
   [MaterialType.DARK_WOOD]: 'Dark Wood',
-  [MaterialType.LIGHT_WOOD]: 'Light Wood',
-  [MaterialType.GLASS]: 'Glass'
+  [MaterialType.WENGE_WOOD]: 'Wenge Wood',
+  [MaterialType.WHITE]: 'White',
 }
 
 export const materialPreviews = {
-  [MaterialType.CHROME]: '#c0c0c0',
-  [MaterialType.BLACK_METAL]: '#1a1a1a',
   [MaterialType.DARK_WOOD]: '#3d2914',
-  [MaterialType.LIGHT_WOOD]: '#d2b48c',
-  [MaterialType.GLASS]: '#ffffff'
+  [MaterialType.WENGE_WOOD]: '#d2b48c',
+  [MaterialType.WHITE]: '#ffffff',
 }
-
 
 export const getMaterialConfig = (materialType: MaterialType) => {
   return materialConfigs[materialType]
 }
 
+interface MaterialTextures {
+  map: Texture | null
+  normalMap: Texture | null
+}
+
+export const useTextures = () => {
+  const darkWoodMap = useLoader(TextureLoader, textureAssets[MaterialType.DARK_WOOD].map!)
+  const wengeWoodMap = useLoader(TextureLoader, textureAssets[MaterialType.WENGE_WOOD].map!)
+  
+  const darkWoodNormal = useLoader(TextureLoader, textureAssets[MaterialType.DARK_WOOD].normalMap!)
+  
+  return useMemo(() => ({
+    [MaterialType.DARK_WOOD]: {
+      map: darkWoodMap,
+      normalMap: darkWoodNormal
+    },
+    [MaterialType.WENGE_WOOD]: {
+      map: wengeWoodMap,
+      normalMap: null
+    },
+    [MaterialType.WHITE]: {
+      map: null,
+      normalMap: null
+    },
+  }), [darkWoodMap, wengeWoodMap, darkWoodNormal])
+}
+
+export const useMaterialTextures = (materialType: MaterialType): MaterialTextures => {
+  const textures = useTextures()
+  return textures[materialType]
+}
+
+export const useMaterialTexture = (materialType: MaterialType): Texture | null => {
+  const textures = useMaterialTextures(materialType)
+  return textures.map
+}
+
 interface MaterialProps {
   materialType: MaterialType
-  map?: any
+  map?: Texture | null
+  normalMap?: Texture | null
   uvTransform?: UVTransform
 }
 
-export const StandardMaterial = ({ materialType, map, uvTransform }: MaterialProps) => {
-  const config = materialConfigs[materialType]
-  
-  // Применяем UV трансформации если они указаны
-  const transformedMap = uvTransform && map ? applyUVTransform(map.clone(), uvTransform) : map
-  
-  return <meshStandardMaterial {...config} map={transformedMap} /> 
+interface MaterialWrapperProps {
+  materialType: MaterialType
+  uvTransform?: UVTransform
 }
 
-export const PhysicalMaterial = ({ materialType, map, uvTransform }: MaterialProps) => {
+export const StandardMaterial = ({ materialType, map, normalMap, uvTransform }: MaterialProps) => {
   const config = materialConfigs[materialType]
-  
-  // Применяем UV трансформации если они указаны
   const transformedMap = uvTransform && map ? applyUVTransform(map.clone(), uvTransform) : map
+  const transformedNormalMap = uvTransform && normalMap ? applyUVTransform(normalMap.clone(), uvTransform) : normalMap
   
-  return <meshPhysicalMaterial {...config} map={transformedMap} />
+  return (
+    <meshStandardMaterial 
+      {...config} 
+      map={transformedMap} 
+      normalMap={transformedNormalMap}
+      normalScale={new Vector2(1.0, 1.0)} />
+  )
 }
 
-export const MaterialWrapper = ({ materialType, map, uvTransform }: MaterialProps) => {
-  if (materialType === MaterialType.GLASS) {
-    return <PhysicalMaterial materialType={materialType} map={map} uvTransform={uvTransform} />
-  }
-  return <StandardMaterial materialType={materialType} map={map} uvTransform={uvTransform} />
+export const MaterialWrapper = ({ materialType, uvTransform }: MaterialWrapperProps) => {
+  const textures = useMaterialTextures(materialType)
+  
+  return (
+    <StandardMaterial 
+      materialType={materialType} 
+      map={textures.map} 
+      normalMap={textures.normalMap}
+      uvTransform={uvTransform} 
+    />
+  )
+}
+
+export const MaterialWrapperWithTexture = ({ materialType, map, normalMap, uvTransform }: MaterialProps) => {
+  return <StandardMaterial materialType={materialType} map={map} normalMap={normalMap} uvTransform={uvTransform} />
 }

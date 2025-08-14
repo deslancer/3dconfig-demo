@@ -80,7 +80,7 @@ export const Input = (props: InputProps) => {
   return (
     <div className="w-full">
       <div className="flex items-center gap-2 mb-2">
-        <label className="text-gray-600 text-sm font-medium uppercase tracking-wide">
+        <label className="text-gray-600 dark:text-gray-300 text-sm font-medium uppercase tracking-wide">
           {props.labelText}
         </label>
       </div>
@@ -95,16 +95,16 @@ export const Input = (props: InputProps) => {
               value={tempValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyPress}
-              className={`w-full bg-white text-dark-gray px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent pr-12 ${
+              className={`w-full bg-white dark:bg-dark-surface text-dark-gray dark:text-dark-text px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent pr-12 ${
                 validationError 
                   ? 'border-red-300 focus:ring-red-500' 
                   : hasChanges
                   ? 'border-yellow-300 focus:ring-yellow-500'
-                  : 'border-gray-300 focus:ring-blue-500'
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
               }`}
               placeholder={props.min.toString()}
             />
-            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm">
               mm
             </span>
           </div>
@@ -132,9 +132,9 @@ export const Input = (props: InputProps) => {
             {validationError}
           </span>
         ) : (
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-400 dark:text-gray-500">
             min: {props.min} - max: {props.max} mm
-            {hasChanges && <span className="ml-2 text-yellow-600">• Klik ✓ of druk Enter om toe te passen</span>}
+            {hasChanges && <span className="ml-2 text-yellow-600 dark:text-yellow-500">• Klik ✓ of druk Enter om toe te passen</span>}
           </span>
         )}
       </div>
