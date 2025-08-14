@@ -1,5 +1,7 @@
+import { ClampToEdgeWrapping, RepeatWrapping } from "three"
 import { KastSection } from "../types/SectionsTypes"
 import { UVTransform } from "../types/UVTypes"
+
 
 export const getPartitionPositions = (width: number, wallThickness: number) => {
     const sectionWidth = 1.0 
@@ -86,6 +88,18 @@ export const applyUVTransform = (texture: any, transform: UVTransform) => {
         flipY = false
     } = transform
 
+    if (repeatX > 1 || repeatY > 1) {
+        texture.wrapS = texture.wrapT = RepeatWrapping
+    } else {
+        texture.wrapS = texture.wrapT = ClampToEdgeWrapping
+    }
+
+    texture.offset.set(0, 0)
+    texture.repeat.set(1, 1)
+    texture.rotation = 0
+    texture.center.set(0.5, 0.5)
+
+  
     texture.offset.set(offsetX, offsetY)
     
     texture.repeat.set(
@@ -94,8 +108,6 @@ export const applyUVTransform = (texture: any, transform: UVTransform) => {
     )
     
     texture.rotation = rotation
-    
-    texture.center.set(0.5, 0.5)
     
     texture.needsUpdate = true
     

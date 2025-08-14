@@ -105,7 +105,7 @@ export const Baseren = (props: BaserenProps) => {
             {/* Back */}       
             <mesh position={[0, height / 2 + wallThickness / 2, -depth / 2 + wallThickness / 2]} castShadow onClick={(e) => e.stopPropagation()}>
                 <boxGeometry args={[width - 2 * wallThickness, height, wallThickness]} />
-                <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.NORMAL} />
+                <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.TILE_4X1} />
             </mesh>
 
             {/* Top */}

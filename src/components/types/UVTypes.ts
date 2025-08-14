@@ -16,6 +16,8 @@ export const UV_PRESETS = {
     ROTATE_270: { repeatX: 1, repeatY: 1, offsetX: 0, offsetY: 0, rotation: -Math.PI / 2 },
     TILE_2X2: { repeatX: 2, repeatY: 2, offsetX: 0, offsetY: 0, rotation: 0 },
     TILE_4X4: { repeatX: 4, repeatY: 4, offsetX: 0, offsetY: 0, rotation: 0 },
+    TILE_2X1: { repeatX: 2, repeatY: 1, offsetX: 0, offsetY: 0, rotation: 0 },
+    TILE_4X1: { repeatX: 4, repeatY: 1, offsetX: 0, offsetY: 0, rotation: 0 },
 } as const
 
 export type UVPresetName = keyof typeof UV_PRESETS

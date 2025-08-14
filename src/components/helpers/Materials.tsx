@@ -71,6 +71,7 @@ export const useTextures = () => {
   const wengeWoodMap = useLoader(TextureLoader, textureAssets[MaterialType.WENGE_WOOD].map!)
   
   const darkWoodNormal = useLoader(TextureLoader, textureAssets[MaterialType.DARK_WOOD].normalMap!)
+  const wengeWoodNormal = useLoader(TextureLoader, textureAssets[MaterialType.WENGE_WOOD].normalMap!)
   
   return useMemo(() => ({
     [MaterialType.DARK_WOOD]: {
@@ -79,13 +80,13 @@ export const useTextures = () => {
     },
     [MaterialType.WENGE_WOOD]: {
       map: wengeWoodMap,
-      normalMap: null
+      normalMap: wengeWoodNormal
     },
     [MaterialType.WHITE]: {
       map: null,
       normalMap: null
     },
-  }), [darkWoodMap, wengeWoodMap, darkWoodNormal])
+  }), [darkWoodMap, wengeWoodMap, darkWoodNormal, wengeWoodNormal])
 }
 
 export const useMaterialTextures = (materialType: MaterialType): MaterialTextures => {
@@ -112,14 +113,30 @@ interface MaterialWrapperProps {
 
 export const StandardMaterial = ({ materialType, map, normalMap, uvTransform }: MaterialProps) => {
   const config = materialConfigs[materialType]
-  const transformedMap = uvTransform && map ? applyUVTransform(map.clone(), uvTransform) : map
-  const transformedNormalMap = uvTransform && normalMap ? applyUVTransform(normalMap.clone(), uvTransform) : normalMap
+  
+  const transformedTextures = useMemo(() => {
+    let transformedMap = map
+    let transformedNormalMap = normalMap
+    
+    if (uvTransform) {
+      if (map) {
+        transformedMap = map.clone()
+        applyUVTransform(transformedMap, uvTransform)
+      }
+      if (normalMap) {
+        transformedNormalMap = normalMap.clone()
+        applyUVTransform(transformedNormalMap, uvTransform)
+      }
+    }
+    
+    return { transformedMap, transformedNormalMap }
+  }, [map, normalMap, uvTransform])
   
   return (
     <meshStandardMaterial 
       {...config} 
-      map={transformedMap} 
-      normalMap={transformedNormalMap}
+      map={transformedTextures.transformedMap} 
+      normalMap={transformedTextures.transformedNormalMap}
       normalScale={new Vector2(1.0, 1.0)} />
   )
 }
