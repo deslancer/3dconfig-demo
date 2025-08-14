@@ -1,8 +1,6 @@
-import { useLoader } from "@react-three/fiber"
 import { MaterialType } from "../../helpers/Materials"
 import { Baseren } from "./Baseren"
 import { Kastpoten } from "./Kastpoten"
-import { TextureLoader } from "three"
 import { Deuren } from "./Deuren"
 import { KastSection } from "../../types/SectionsTypes"
 import { useState, useCallback } from "react"
@@ -21,7 +19,6 @@ interface KastProps {
 
 export const Kast = (props: KastProps) => {
     const { width, height, depth, materialType, wallThickness = 0.02, allDoorsOpen, onDoorStateChange, onSectionChange, onActiveSectionChange } = props
-    const colorMapDarkWood = useLoader(TextureLoader, '/assets/dark_wood.jpg')
     
     const [baseSectionClickHandler, setBaseSectionClickHandler] = useState<((sectionId: string) => void) | null>(null)
     const [doorSectionClickHandler, setDoorSectionClickHandler] = useState<((sectionId: string) => void) | null>(null)
@@ -47,7 +44,6 @@ export const Kast = (props: KastProps) => {
                 depth={depth} 
                 materialType={materialType} 
                 wallThickness={wallThickness}
-                texture={colorMapDarkWood}
                 onSectionChange={onSectionChange}
                 onActiveSectionChange={onActiveSectionChange}
                 onGetSectionClickHandler={handleGetBaseSectionClickHandler}
@@ -59,7 +55,6 @@ export const Kast = (props: KastProps) => {
                 depth={depth} 
                 wallThickness={wallThickness} 
                 materialType={materialType}
-                texture={colorMapDarkWood}
                 allDoorsOpen={allDoorsOpen}
                 onDoorStateChange={onDoorStateChange}
                 onGetSectionClickHandler={handleGetDoorSectionClickHandler}

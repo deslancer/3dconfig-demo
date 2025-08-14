@@ -41,7 +41,6 @@ export const Afmetingen = (props: AfmetingenProps) => {
             <p>• LK: draaiing camera</p>
             <p>• PRM: verplaatsing</p>
             <p>• WHEEL: zoom</p>
-            <p>• KLIK op kast: kleur wijzigen</p>
           </div>
         </div>
       </div>

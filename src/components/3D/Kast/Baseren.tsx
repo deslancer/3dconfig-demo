@@ -16,7 +16,6 @@ interface BaserenProps {
     depth: number
     materialType: MaterialType
     wallThickness?: number 
-    texture: any
     onSectionChange?: (sections: KastSection[]) => void
     onActiveSectionChange?: (activeSectionId: string | null) => void
     onGetSectionClickHandler?: (handler: (sectionId: string) => void) => void
@@ -24,7 +23,7 @@ interface BaserenProps {
 }
 
 export const Baseren = (props: BaserenProps) => {
-    const { width, height, depth, materialType, wallThickness = 0.02, texture, onSectionChange, onActiveSectionChange, onGetSectionClickHandler, sectionClickHandler } = props
+    const { width, height, depth, materialType, wallThickness = 0.02, onSectionChange, onActiveSectionChange, onGetSectionClickHandler, sectionClickHandler } = props
     const { activeSectionId, setActiveSectionId } = useActiveSection()
     const partitionPositions = getPartitionPositions(width, wallThickness)
     const [sections, setSections] = useState<KastSection[]>([])
@@ -90,32 +89,32 @@ export const Baseren = (props: BaserenProps) => {
             {/* Bottom */}
             <mesh position={[0, wallThickness / 2, 0]} castShadow onClick={(e) => e.stopPropagation()}>
                 <boxGeometry args={[width, wallThickness, depth]} />
-                <MaterialWrapper materialType={materialType} map={texture} uvTransform={UV_PRESETS.ROTATE_90} />
+                <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.ROTATE_90} />
             </mesh>
                 
             <mesh position={[-width / 2 + wallThickness / 2, height / 2 + wallThickness / 2, 0]} castShadow onClick={(e) => e.stopPropagation()}>
                 <boxGeometry args={[wallThickness, height - wallThickness, depth]} />
-                <MaterialWrapper materialType={materialType} map={texture} uvTransform={UV_PRESETS.NORMAL} />
+                <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.NORMAL} />
             </mesh>
                     
             <mesh position={[width / 2 - wallThickness / 2, height / 2 + wallThickness / 2, 0]} castShadow onClick={(e) => e.stopPropagation()}>
                 <boxGeometry args={[wallThickness, height - wallThickness, depth]} />
-                <MaterialWrapper materialType={materialType} map={texture} uvTransform={UV_PRESETS.NORMAL} />
+                <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.NORMAL} />
             </mesh>
 
             {/* Back */}       
             <mesh position={[0, height / 2 + wallThickness / 2, -depth / 2 + wallThickness / 2]} castShadow onClick={(e) => e.stopPropagation()}>
                 <boxGeometry args={[width - 2 * wallThickness, height, wallThickness]} />
-                <MaterialWrapper materialType={materialType} map={texture} uvTransform={UV_PRESETS.NORMAL} />
+                <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.NORMAL} />
             </mesh>
 
             {/* Top */}
             <mesh position={[0, height + wallThickness / 2, 0]} castShadow onClick={(e) => e.stopPropagation()}>
                 <boxGeometry args={[width, wallThickness, depth]} />
-                <MaterialWrapper materialType={materialType} map={texture} uvTransform={UV_PRESETS.ROTATE_90} />
+                <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.ROTATE_90} />
             </mesh>
 
-            <Kader width={width} height={height} depth={depth} wallThickness={wallThickness} materialType={materialType} texture={texture} />
+            <Kader width={width} height={height} depth={depth} wallThickness={wallThickness} materialType={materialType} />
             
             {partitionPositions.map((x, index) => (
                 <mesh 
@@ -125,7 +124,7 @@ export const Baseren = (props: BaserenProps) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <boxGeometry args={[wallThickness, height, depth - 2 * wallThickness]} />
-                    <MaterialWrapper materialType={materialType} map={texture} uvTransform={UV_PRESETS.NORMAL} />
+                    <MaterialWrapper materialType={materialType} uvTransform={UV_PRESETS.NORMAL} />
                 </mesh>
             ))}   
 

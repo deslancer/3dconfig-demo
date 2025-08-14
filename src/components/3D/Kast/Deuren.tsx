@@ -12,7 +12,6 @@ interface DeurenProps {
     depth: number;
     wallThickness: number;
     materialType: MaterialType;
-    texture?: any;
     allDoorsOpen?: boolean;
     onDoorStateChange?: (allOpen: boolean) => void;
     onGetSectionClickHandler?: (handler: (sectionId: string) => void) => void;
@@ -27,12 +26,11 @@ interface DoorProps {
     hingePosition: number;
     isLeft: boolean;
     materialType: MaterialType;
-    texture?: any;
     isOpen: boolean;
     isEdgeDoor?: boolean;
 }
 
-const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, texture, isOpen, isEdgeDoor = true }: DoorProps) => {
+const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, materialType, isOpen, isEdgeDoor = true }: DoorProps) => {
     const openAngle = isEdgeDoor ? Math.PI / 2 : (84 * Math.PI / 180)
     const [shouldAnimate, setShouldAnimate] = useState(isOpen)
     const targetAngle = shouldAnimate ? (isLeft ? -openAngle : openAngle) : 0
@@ -79,14 +77,9 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
                 receiveShadow
             >
                 <boxGeometry args={[width, height - wallThickness, wallThickness]} />
-                {texture ? (
-                    <MaterialWrapper 
-                        materialType={materialType} 
-                        map={texture}
-                    />
-                ) : (
-                    <meshStandardMaterial color="#f8f9fa" />
-                )}
+                <MaterialWrapper 
+                    materialType={materialType} 
+                />
             </mesh>
             <primitive 
                 object={handleMesh.scene.clone()} 
@@ -100,7 +93,7 @@ const Door = ({ x, width, height, depth, wallThickness, hingePosition, isLeft, m
 }
 
 export const Deuren = (props: DeurenProps) => {
-    const { width, height, depth, wallThickness, materialType, texture, allDoorsOpen = false, onDoorStateChange, onGetSectionClickHandler } = props
+    const { width, height, depth, wallThickness, materialType, allDoorsOpen = false, onDoorStateChange, onGetSectionClickHandler } = props
     const doorPositions = getDoorPositions(width, wallThickness)
     const deurenPosition = 0.1 - wallThickness / 2
     const { setDrawerState } = useAppStore()
@@ -204,7 +197,7 @@ export const Deuren = (props: DeurenProps) => {
                             hingePosition={section.leftDoor.hingePosition}
                             isLeft={section.leftDoor.isLeft}
                             materialType={materialType}
-                            texture={texture}
+
                             isOpen={openDoors[`${sectionIndex}-left`] || false}
                             isEdgeDoor={leftDoorIsEdge}
                         />
@@ -219,7 +212,7 @@ export const Deuren = (props: DeurenProps) => {
                                 hingePosition={section.rightDoor.hingePosition}
                                 isLeft={section.rightDoor.isLeft}
                                 materialType={materialType}
-                                texture={texture}
+    
                                 isOpen={openDoors[`${sectionIndex}-right`] || false}
                                 isEdgeDoor={rightDoorIsEdge}
                             />

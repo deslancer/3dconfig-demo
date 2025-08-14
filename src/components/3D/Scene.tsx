@@ -17,9 +17,10 @@ interface SceneProps {
   onActiveSectionChange?: (activeSectionId: string | null) => void;
 }
 
+
 export const Scene = (props: SceneProps) => {
     const { width, height, depth, materialType, allDoorsOpen, onDoorStateChange, onSectionChange, onActiveSectionChange } = props;
-    
+
     const cameraDistance = Math.max(width, height, depth) * 2.5;
     const cameraPosition: [number, number, number] = [
       cameraDistance * 0.8, 
@@ -55,7 +56,6 @@ export const Scene = (props: SceneProps) => {
         />
         <ambientLight intensity={1.5} />
         <Floor />
-        <axesHelper args={[5]} />
         <Kast 
           width={width} 
           height={height} 
@@ -66,7 +66,6 @@ export const Scene = (props: SceneProps) => {
           onSectionChange={onSectionChange}
           onActiveSectionChange={onActiveSectionChange}
         />
-      
       </Canvas>
     )
 }

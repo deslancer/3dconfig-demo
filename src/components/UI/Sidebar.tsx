@@ -46,12 +46,6 @@ export const Sidebar = (props: SidebarProps) => {
         {tabs.find((tab) => tab.label === activeTab)?.content}
      </div>
 
-      
-      <div className="mt-auto pt-4 border-t border-gray-200">
-        <button className="w-full bg-light-blue text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-light-cyan transition-colors duration-300">
-            Bestellen
-        </button>
-      </div>
     </div>
   );
 };
